@@ -1,5 +1,5 @@
 // 오늘의 운세 뽑기 — Express 백엔드
-// 역할: 미리 그려 둔 캐릭터 그림(public/img) 중 하나를 고르고, 그 장면에 맞는 운세를 Gemini 로 쓴다.
+// 역할: 미리 넣어 둔 그림(public/img: 캐릭터 그림, 국립중앙박물관 소장품) 중 하나를 고르고, 그 장면에 맞는 운세를 Gemini 로 쓴다.
 // API 키는 서버에만 있다. 키가 없거나 무료 한도를 넘기면 그림 주제에 맞춘 내장 문구로 응답한다.
 // 그림이 하나도 없으면 image 를 null 로 보내고, 화면은 그림 칸을 숨긴다.
 
@@ -59,7 +59,9 @@ function buildFortunePrompt({ weekday, scene }) {
       '[그림]',
       `- 운세 카드에 이 그림이 함께 나간다: "${scene.ko}"`,
       '- 운세는 반드시 이 그림의 상황과 어울려야 한다. 그림 속 상황을 읽는 사람의 오늘 하루로 바꿔 써라.',
-      '- 그림 속 동물이나 캐릭터를 직접 부르지는 마라 (예: "오리처럼" 금지).',
+      ...(scene.relicId
+        ? ['- 옛 그림의 상징(예: 까치는 반가운 소식, 호랑이는 액막이)을 운세에 자연스럽게 녹여도 좋다. 설명문처럼 쓰지는 마라.']
+        : ['- 그림 속 동물이나 캐릭터를 직접 부르지는 마라 (예: "오리처럼" 금지).']),
       '',
     ] : []),
     `오늘은 ${weekday}요일이다.`,
@@ -152,9 +154,12 @@ function clampPct(v) {
 
 // ───────────────────────────── 그림 목록 ─────────────────────────────
 
-// scenes/scenes.json 의 장면 중 public/img/<id>.(png|jpg|jpeg|webp) 파일이 있는 것만 쓴다.
-// 그림을 올리면 재시작 없이 1분 안에 반영된다.
-const SCENES = require('./scenes/scenes.json').scenes;
+// scenes/scenes.json(캐릭터 그림)과 scenes/museum.json(박물관 소장품)의 장면 중
+// public/img/<id>.(png|jpg|jpeg|webp) 파일이 있는 것만 쓴다. 그림을 넣으면 재시작 없이 1분 안에 반영된다.
+const SCENES = [
+  ...require('./scenes/scenes.json').scenes,
+  ...require('./scenes/museum.json').scenes,
+];
 const IMG_DIR = path.join(__dirname, 'public', 'img');
 const IMG_EXT = /\.(png|jpe?g|webp)$/i;
 let sceneCache = { at: 0, list: [] };
@@ -319,6 +324,8 @@ app.post('/api/fortune', async (req, res) => {
     mood,
     image,
     sceneId: scene ? scene.id : null,
+    // 공공누리 제1유형은 출처 표시가 조건이다
+    credit: scene?.relicId ? `${scene.title} (${scene.collectionNo}) · 국립중앙박물관 · 공공누리 제1유형` : null,
     textSource,
     imageSource: scene ? 'scene' : 'none',
     notes,

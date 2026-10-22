@@ -1,2 +1,5 @@
 node_modules/
 .env
+# 서버에서 받는 박물관 그림 (scenes/museum.js)
+public/img/preview/
+public/img/museum-*

@@ -1,0 +1,15 @@
+{
+  "note": "국립중앙박물관 소장품 (공공누리 제1유형: 출처 표시). 그림은 서버에서 node scenes/museum.js fetch 로 받는다. title·collectionNo 는 카드 아래 출처로 표시된다.",
+  "scenes": [
+    { "id": "museum-8449",     "relicId": "8449",     "collectionNo": "덕수2506", "title": "까치호랑이", "topic": "luck", "mood": "happy",
+      "ko": "호랑이와 까치를 함께 그린 조선 민화(까치호랑이). 호랑이는 나쁜 기운을 막아 주고, 까치는 반가운 소식을 전한다는 뜻을 담았다." },
+    { "id": "museum-7187",     "relicId": "7187",     "collectionNo": "신수6920", "title": "까치호랑이", "topic": "luck", "mood": "smug",
+      "ko": "호랑이와 까치를 함께 그린 조선 민화(까치호랑이). 호랑이는 나쁜 기운을 막아 주고, 까치는 반가운 소식을 전한다는 뜻을 담았다." },
+    { "id": "museum-8450",     "relicId": "8450",     "collectionNo": "동원2613", "title": "까치호랑이", "topic": "people", "mood": "happy",
+      "ko": "호랑이와 까치를 함께 그린 조선 민화(까치호랑이). 까치가 반가운 손님과 좋은 소식을 데려온다는 뜻을 담았다." },
+    { "id": "museum-36552744", "relicId": "36552744", "collectionNo": "건희4066", "title": "까치호랑이", "topic": "luck", "mood": "smug",
+      "ko": "호랑이와 까치를 함께 그린 조선 민화(까치호랑이). 익살스러운 호랑이가 나쁜 기운을 쫓고, 까치가 기쁜 소식을 알린다." },
+    { "id": "museum-4203",     "relicId": "4203",     "collectionNo": "본관4411", "title": "호랑이", "topic": "people", "mood": "smug",
+      "ko": "늠름한 호랑이를 그린 그림. 나쁜 기운을 물리치고 집과 사람을 지켜 준다는 뜻을 담았다." }
+  ]
+}

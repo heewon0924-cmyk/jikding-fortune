@@ -103,7 +103,10 @@
     width: 100%; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden;
     background: var(--accent-soft); display: grid; place-items: center;
   }
-  .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .art { position: relative; }
+  .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+  .art.museum { background: #efe7da; } /* 옛 그림은 세로가 길어 한지색 바탕 위에 통째로 보여 준다 */
+  .credit { margin: -8px 0 0; font-size: 11px; color: var(--muted); text-align: right; }
   .title { margin: 0; font-size: 19px; letter-spacing: -.03em; }
   .fortune { margin: 0; font-size: 16px; line-height: 1.65; word-break: keep-all; }
   .indices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
@@ -155,7 +158,8 @@
 
   <!-- 3. 결과 -->
   <section class="card result hidden" id="view-result">
-    <div class="art hidden" id="r-art"><img id="r-img" alt="오늘의 운세 캐릭터"></div>
+    <div class="art hidden" id="r-art"><img id="r-img" alt="오늘의 운세 그림"></div>
+    <p class="credit hidden" id="r-credit"></p>
     <h2 class="title" id="r-title"></h2>
     <p class="fortune" id="r-fortune"></p>
     <div class="indices" id="r-indices"></div>
@@ -275,6 +279,9 @@
   function render(data) {
     current = data;
     $('r-art').classList.toggle('hidden', !data.image);
+    $('r-art').classList.toggle('museum', Boolean(data.credit));
+    $('r-credit').textContent = data.credit || '';
+    $('r-credit').classList.toggle('hidden', !data.credit);
     if (data.image) $('r-img').src = data.image;
     $('r-title').textContent = data.title;
     $('r-fortune').textContent = data.fortune;

@@ -11,7 +11,9 @@ malgeumi/
 ├── scenes/
 │   ├── scenes.json                그림 장면 40개 (주제 8개 × 5, 기분, 한국어 설명, 영어 프롬프트)
 │   ├── PROMPTS.md                 Gemini 앱에 붙여 넣을 프롬프트 모음 (make-prompts.js 가 만듦)
-│   └── make-prompts.js            scenes.json → PROMPTS.md
+│   ├── make-prompts.js            scenes.json → PROMPTS.md
+│   ├── museum.json                국립중앙박물관 그림 목록 (작품 번호, 제목, 주제, 뜻)
+│   └── museum.js                  박물관 그림 검색·미리보기·받기
 ├── .env.example                   환경 변수 예시
 ├── deploy/
 │   ├── setup-server.sh            서버 최초 1회 설정 (Node, Nginx, systemd, clone)
@@ -48,6 +50,22 @@ malgeumi/
 
 40장을 다 채우지 않아도 됩니다. 올린 그림만으로 동작하고, 새 그림은 1분 안에 반영됩니다.
 장면을 바꾸거나 추가하려면 `scenes/scenes.json`을 고친 뒤 `node scenes/make-prompts.js`로 `PROMPTS.md`를 다시 만듭니다.
+
+## 국립중앙박물관 그림 넣기
+
+국립중앙박물관 소장품 중 **공공누리 제1유형**(출처 표시 조건)인 그림을 쓸 수 있습니다. 카드 아래에 작품명, 소장품 번호, 출처가 자동으로 표시됩니다. 그림은 서버에서 받고 git에는 올리지 않습니다(`.gitignore`).
+
+```bash
+cd ~/malgeumi
+node scenes/museum.js search 까치호랑이 모란 책거리    # 검색해서 작품 번호와 제목 보기
+node scenes/museum.js preview 8449 7187 350 4261     # 그림을 받아 미리보기 페이지 만들기
+# 휴대폰으로 https://malgeumi.161.33.130.92.sslip.io/fortune/img/preview/ 에서 보고 고르기
+# 고른 작품을 scenes/museum.json 에 추가 (id, relicId, collectionNo, title, topic, mood, ko)
+node scenes/museum.js fetch                          # museum.json 의 그림을 public/img 로 받기
+```
+
+- `fetch`는 공공누리 1유형 표시가 없는 작품은 받지 않습니다.
+- 그림에서 빼고 싶은 작품은 `museum.json`에서 지우고 `public/img/museum-<번호>.jpg`도 지우면 됩니다. 1분 안에 반영됩니다.
 
 ## 프롬프트 룰 (server.js의 `buildFortunePrompt`)
 
