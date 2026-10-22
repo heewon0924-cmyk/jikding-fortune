@@ -57,7 +57,7 @@ npm start                 # http://127.0.0.1:3000
 
 ## 클라우드 서버 배포
 
-모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 clone되어 있습니다. 아래 예시는 `/opt/jikding-fortune`을 쓰지만, 다른 경로에 두어도 스크립트가 자기 위치를 기준으로 동작합니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
+모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 내 계정으로 clone되어 있습니다. 아래 예시는 `~/jikding-fortune`이지만, 다른 경로에 두어도 스크립트가 자기 위치를 기준으로 동작합니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
 코드를 고쳐 GitHub에 push한 뒤 서버에서 `deploy.sh`를 한 번 실행하면 새 버전이 반영됩니다.
 
 ```
@@ -68,36 +68,32 @@ npm start                 # http://127.0.0.1:3000
 
 ### 1. 서버가 저장소를 읽을 수 있게 하기 (private 저장소라서 필요)
 
-서버에서 배포용 키를 만들고, 공개키를 GitHub 저장소 **Settings → Deploy keys**에 **읽기 전용**으로 등록합니다.
+내 계정(예: `ubuntu`)으로 키를 만들고, 공개키를 GitHub 저장소 **Settings → Deploy keys**에 **읽기 전용**으로 등록합니다. sudo는 쓰지 않습니다.
 
 ```bash
-sudo ssh-keygen -t ed25519 -N "" -f /root/.ssh/jikding_deploy
-sudo tee -a /root/.ssh/config >/dev/null <<'EOF'
-Host github.com
-  IdentityFile /root/.ssh/jikding_deploy
-EOF
-sudo cat /root/.ssh/jikding_deploy.pub      # 이 내용을 Deploy keys 에 붙여넣기
-sudo ssh -T git@github.com                  # "successfully authenticated" 확인
+ssh-keygen -t ed25519 -N "" -f ~/.ssh/jikding_deploy
+printf 'Host github.com\n  IdentityFile ~/.ssh/jikding_deploy\n' >> ~/.ssh/config
+cat ~/.ssh/jikding_deploy.pub         # 이 내용을 Deploy keys 에 붙여넣기
+ssh -T git@github.com                 # "successfully authenticated" 확인
 ```
 
 ### 2. 최초 설정 (한 번만)
 
 ```bash
-sudo git clone git@github.com:heewon0924-cmyk/jikding-fortune.git /opt/jikding-fortune
-sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git \
-  bash /opt/jikding-fortune/deploy/setup-server.sh
-sudo nano /opt/jikding-fortune/.env          # GEMINI_API_KEY 입력
+git clone git@github.com:heewon0924-cmyk/jikding-fortune.git ~/jikding-fortune   # sudo 없이
+sudo bash ~/jikding-fortune/deploy/setup-server.sh
+nano ~/jikding-fortune/.env           # GEMINI_API_KEY 입력
 sudo systemctl restart jikding-fortune
 ```
 
-> **경로 주의**: 앱은 `fortune` 계정으로 실행됩니다. `/home/내계정/` 아래에 두면 Ubuntu 22.04의 홈 디렉토리 권한(750) 때문에 `fortune`이 들어가지 못해 앱이 뜨지 않습니다. `/opt`나 `/srv`처럼 홈 밖의 경로를 쓰세요.
+앱은 **저장소 주인 계정**(여기서는 `ubuntu`)으로 실행됩니다. 그래서 따로 권한을 고칠 일이 없습니다.
 
 `setup-server.sh`는 앱을 `127.0.0.1:3000`에 띄우는 것까지 합니다.
-- Node 20, git, Nginx는 **없을 때만** 설치합니다.
-- `fortune` 서비스 계정을 만들고 `.env`를 만듭니다.
+- Node 20과 Nginx는 **없을 때만** 설치합니다.
+- `.env`를 만듭니다.
 - systemd 서비스를 등록합니다.
 
-`DOMAIN`을 주지 않으면 Nginx 설정은 건드리지 않습니다. 이미 돌고 있는 사이트가 있다면 아래 3번 중 하나를 고르세요.
+`DOMAIN`을 주지 않으면 Nginx 설정은 건드리지 않습니다.
 
 ### 3. Nginx에 연결하기
 
@@ -121,8 +117,7 @@ certbot이 만든 `listen 443` 블록이 따로 있다면, 그 블록 안에 붙
 DNS에 서브도메인 A 레코드를 서버 IP로 추가한 다음 실행합니다.
 
 ```bash
-sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git DOMAIN=fortune.내도메인 \
-  bash /opt/jikding-fortune/deploy/setup-server.sh
+sudo DOMAIN=fortune.내도메인 bash ~/jikding-fortune/deploy/setup-server.sh
 sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사이트 때 이미 설치됨
 ```
 
@@ -132,7 +127,7 @@ sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사�
 ### 4. 업데이트 배포 / 운영 명령
 
 ```bash
-sudo /opt/jikding-fortune/deploy/deploy.sh     # 최신 main 배포 (헬스 체크 실패 시 직전 커밋으로 자동 롤백)
+sudo bash ~/jikding-fortune/deploy/deploy.sh   # 최신 main 배포 (헬스 체크 실패 시 직전 커밋으로 자동 롤백)
 sudo journalctl -u jikding-fortune -f          # 로그
 sudo systemctl restart jikding-fortune         # .env 바꾼 뒤
 ```

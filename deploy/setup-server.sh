@@ -1,49 +1,49 @@
 #!/usr/bin/env bash
-# 서버 최초 1회 설정 (Ubuntu/Debian). root 또는 sudo 로 실행.
+# 서버 최초 1회 설정 (Ubuntu/Debian). 저장소를 내 계정으로 clone 한 뒤 sudo 로 실행.
 #
-#   기존 사이트에 /fortune/ 로 붙일 때 (Nginx 설정은 건드리지 않음):
-#     sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git bash setup-server.sh
-#   새 (서브)도메인으로 따로 띄울 때:
-#     sudo REPO_URL=... DOMAIN=fortune.example.com bash setup-server.sh
+#   git clone git@github.com:heewon0924-cmyk/jikding-fortune.git ~/jikding-fortune
+#   sudo bash ~/jikding-fortune/deploy/setup-server.sh                 # 기존 사이트에 /fortune/ 로 붙일 때
+#   sudo DOMAIN=fortune.example.com bash ~/jikding-fortune/deploy/setup-server.sh   # 새 (서브)도메인일 때
+#
+# 앱은 저장소 주인 계정(예: ubuntu)으로 실행된다. 그래서 권한을 따로 고칠 일이 없다.
 set -euo pipefail
 
-REPO_URL="${REPO_URL:?REPO_URL 을 지정하세요}"
-DOMAIN="${DOMAIN:-}"
 APP_DIR="${APP_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"   # 기본: 이 스크립트가 들어 있는 저장소
-APP_USER="${APP_USER:-fortune}"
-BRANCH="${BRANCH:-main}"
+APP_USER="${APP_USER:-$(stat -c %U "$APP_DIR")}"           # 기본: 저장소 주인
+DOMAIN="${DOMAIN:-}"
 
-echo "▶ 패키지 설치"
+[ "$(id -u)" -eq 0 ] || { echo "sudo 로 실행하세요: sudo bash $0"; exit 1; }
+[ -d "$APP_DIR/.git" ] || { echo "$APP_DIR 가 git 저장소가 아닙니다. 먼저 git clone 하세요."; exit 1; }
+if [ "$APP_USER" = root ]; then
+  echo "저장소가 root 소유입니다. 내 계정으로 바꾼 뒤 다시 실행하세요:"
+  echo "  sudo chown -R \$USER:\$USER $APP_DIR"
+  exit 1
+fi
+as_app() { sudo -u "$APP_USER" -H "$@"; }
+
+echo "▶ 패키지 설치 (없는 것만)"
 if ! command -v node >/dev/null || [ "$(node -p 'process.versions.node.split(".")[0]')" -lt 18 ]; then
   curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   apt-get install -y nodejs
 fi
-command -v git >/dev/null || apt-get install -y git
-# Nginx 가 이미 있으면(기존 사이트 운영 중) 그대로 쓴다
 command -v nginx >/dev/null || apt-get install -y nginx
+echo "  node $(node -v), $(nginx -v 2>&1)"
 
-echo "▶ 서비스 계정"
-id "$APP_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "/home/$APP_USER" --shell /usr/sbin/nologin "$APP_USER"
-
-echo "▶ 코드 받기 → $APP_DIR"
-if [ ! -d "$APP_DIR/.git" ]; then
-  git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
-fi
-git config --global --add safe.directory "$APP_DIR"
+echo "▶ 앱 준비 ($APP_DIR, 실행 계정: $APP_USER)"
 cd "$APP_DIR"
 if [ ! -f .env ]; then
-  cp .env.example .env
-  echo "  ⚠ $APP_DIR/.env 를 만들었습니다. GEMINI_API_KEY 를 넣고 'systemctl restart jikding-fortune' 하세요."
+  as_app cp .env.example .env
+  echo "  ⚠ .env 를 만들었습니다. GEMINI_API_KEY 를 넣고 'sudo systemctl restart jikding-fortune' 하세요."
 fi
 chmod 600 .env
-npm ci --omit=dev
-chown -R "$APP_USER:$APP_USER" "$APP_DIR"
+as_app npm ci --omit=dev
 
 echo "▶ systemd"
 sed -e "s#__APP_DIR__#$APP_DIR#g" -e "s#__APP_USER__#$APP_USER#g" -e "s#__NODE__#$(command -v node)#g" \
   deploy/jikding-fortune.service > /etc/systemd/system/jikding-fortune.service
 systemctl daemon-reload
-systemctl enable --now jikding-fortune
+systemctl enable jikding-fortune
+systemctl restart jikding-fortune
 
 echo "▶ Nginx"
 if [ -n "$DOMAIN" ]; then
@@ -60,8 +60,10 @@ else
   echo "  sudo nginx -t && sudo systemctl reload nginx  →  https://기존주소/fortune/"
 fi
 
-sleep 1
-curl -fsS http://127.0.0.1:3000/api/health && echo
+for _ in $(seq 1 10); do
+  curl -fsS http://127.0.0.1:3000/api/health && echo && break
+  sleep 1
+done || true
 echo "✅ 완료."
-[ -n "$DOMAIN" ] && echo "   HTTPS: sudo apt-get install -y certbot python3-certbot-nginx && sudo certbot --nginx -d $DOMAIN"
+[ -n "$DOMAIN" ] && echo "   HTTPS: sudo certbot --nginx -d $DOMAIN"
 exit 0
