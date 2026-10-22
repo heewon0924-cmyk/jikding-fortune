@@ -1,12 +1,17 @@
 # 🔮 오늘의 직딩 운세 뽑기
 
-버튼을 누르면 AI가 직장인 공감 운세 한두 줄과 B급 캐릭터 그림을 만들어 카드로 보여 주는 모바일 웹앱입니다.
+버튼을 누르면 B급 캐릭터 그림 한 장과, 그 그림에 맞춰 AI가 쓴 직장인 공감 운세 한두 줄을 카드로 보여 주는 모바일 웹앱입니다.
 빌드 과정이 없습니다. `server.js` 하나와 `public/index.html` 하나로 돌아갑니다.
 
 ```
 jikding-fortune/
-├── server.js                      Express 백엔드 (Gemini 텍스트 + Imagen/Gemini 이미지, API 키 은닉)
+├── server.js                      Express 백엔드 (그림 고르기 + Gemini 운세, API 키 은닉)
 ├── public/index.html              모바일 프론트엔드 (Vanilla JS, CSS 내장)
+├── public/img/                    캐릭터 그림 (scenes.json 의 id 와 같은 파일 이름)
+├── scenes/
+│   ├── scenes.json                그림 장면 40개 (주제, 기분, 한국어 설명, 영어 프롬프트)
+│   ├── PROMPTS.md                 Gemini 앱에 붙여 넣을 프롬프트 모음 (make-prompts.js 가 만듦)
+│   └── make-prompts.js            scenes.json → PROMPTS.md
 ├── .env.example                   환경 변수 예시
 ├── deploy/
 │   ├── setup-server.sh            서버 최초 1회 설정 (Node, Nginx, systemd, clone)
@@ -15,33 +20,40 @@ jikding-fortune/
 │   └── nginx-fortune.conf         Nginx 리버스 프록시 템플릿
 ```
 
-## 먼저 알아 둘 것: 무료 티어와 모델
+## 동작 방식과 비용
 
-명세에 적힌 모델 두 개는 그대로 쓸 수 없어서 기본값을 바꿨습니다.
+1. 버튼을 누르면 서버가 `public/img/`에 있는 그림 중 하나를 고릅니다. 최근에 나온 그림은 피합니다.
+2. 그 그림의 장면 설명(`scenes.json`의 `ko`)을 함께 보내서, Gemini가 **그 그림에 맞는** 운세를 씁니다.
+3. 그림과 운세를 카드로 보여 줍니다.
 
-| 용도 | 명세 | 실제 기본값 | 이유 |
-|---|---|---|---|
-| 운세 텍스트 | `gemini-1.5-flash` | `gemini-2.5-flash` | 1.5 계열은 서비스가 종료됐습니다. 2.5 Flash에도 무료 티어가 있습니다. |
-| 이미지 | Imagen 3 | `imagen-3.0-generate-002` (설정 가능) | Imagen API는 **결제 계정에서만** 호출됩니다. 무료 키로는 거절됩니다. |
+**비용은 0원입니다.**
+- **운세 문구**: `gemini-2.5-flash` 무료 티어를 씁니다. 명세의 `gemini-1.5-flash`는 서비스가 종료돼서 바꿨습니다. 결제 계정이 연결되지 않은 프로젝트의 키를 쓰면 요금이 나가지 않고, 한도를 넘으면 요청이 거절될 뿐입니다.
+- **그림**: API로 만들지 않습니다. Gemini 앱에서 미리 만들어 넣어 둡니다(아래 **그림 넣기**). Imagen API는 결제 계정 전용이라 쓰지 않습니다.
 
-그래서 서버는 이렇게 동작합니다.
+**실패해도 멈추지 않습니다.**
+- 키가 없거나, Gemini가 실패하거나, 하루 한도를 넘으면 **그림 주제에 맞춘 내장 문구**로 응답합니다. 그래서 그림과 문구가 어긋나지 않습니다.
+- 그림이 하나도 없으면 기분별 **내장 SVG 캐릭터**를 보여 줍니다.
 
-- **텍스트**는 무료 키로 Gemini를 호출합니다.
-- **이미지**는 설정한 모델(`IMAGE_MODEL`)로 시도합니다. 결제가 안 된 키라서 거절되거나 한도를 넘거나 시간이 초과되면, 운세 분위기에 맞춘 **내장 SVG 캐릭터**로 바로 대체합니다. 앱이 멈추거나 에러 화면이 뜨는 일은 없습니다.
-- 돈이 나갈 일을 아예 없애려면 `IMAGE_ENABLED=false`로 두면 됩니다. 텍스트만 AI가 쓰고 그림은 항상 내장 캐릭터로 나옵니다.
-- 결제를 연결했다면 `IMAGE_MODEL`을 `imagen-3.0-generate-002`, `imagen-4.0-generate-001`, `gemini-2.5-flash-image` 중에서 고르면 됩니다. `imagen-*`은 `:predict`로, 그 밖의 모델은 `:generateContent`로 서버가 알아서 호출합니다.
-- `GEMINI_API_KEY`를 비워 두면 내장 문구 8종과 내장 그림으로 동작하는 **데모 모드**가 됩니다. UI 확인용으로 쓰면 됩니다.
-
-> 무료 티어의 한도와 지원 모델은 Google이 자주 바꿉니다. 키를 넣은 뒤 아래 **확인** 절차로 실제 동작을 한 번 보세요.
-
-무료 한도를 지키는 장치도 넣어 두었습니다(`.env`에서 조정합니다).
+**무료 한도를 지키는 장치** (`.env`에서 조정)
 - IP 하나당 분당 `RATE_LIMIT_PER_MIN`회(기본 6회)
-- 서버 전체 하루 텍스트 `DAILY_TEXT_LIMIT`회, 이미지 `DAILY_IMAGE_LIMIT`회. 한도를 넘으면 내장 콘텐츠로 응답합니다.
+- 서버 전체 하루 Gemini 호출 `DAILY_TEXT_LIMIT`회(기본 200회)
 
-## 프롬프트 룰 (server.js에 들어 있음)
+## 그림 넣기
 
-- **운세**(`buildFortunePrompt`): 시니컬하지만 귀여운 직장인 유머로 씁니다. 월요병, 커피, 빌드 오류, 칼퇴 실패 같은 키워드를 쓰고, 2문장을 넘기지 않습니다. 응답은 JSON 스키마로 강제하며 운세, 제목, 지수 2개, 행운 아이템, 기분(mood), 영어 장면 묘사를 받습니다.
-- **이미지**(`buildImagePrompt`): 스타일은 `"Cute 2D cartoon sticker illustration, clean vector style, humorous character"`로 고정합니다. 글자, 숫자, 말풍선, 로고를 금지해서 캐릭터의 표정과 상황 묘사에만 집중하게 합니다.
+1. [`scenes/PROMPTS.md`](scenes/PROMPTS.md)의 프롬프트를 하나씩 Gemini 앱에 붙여 넣어 그림을 만듭니다.
+2. 마음에 드는 그림을 **적힌 이름 그대로** 저장합니다. 예: `coffee-01.png`. 확장자는 png·jpg·webp 모두 됩니다.
+3. 저장한 그림을 저장소의 `public/img/`에 올립니다. GitHub 웹에서 `public/img` 폴더로 들어가 **Add file → Upload files**를 쓰면 됩니다.
+4. 서버에서 `sudo bash ~/jikding-fortune/deploy/deploy.sh`를 실행합니다.
+
+40장을 다 채우지 않아도 됩니다. 올린 그림만으로 동작하고, 새 그림은 1분 안에 반영됩니다.
+장면을 바꾸거나 추가하려면 `scenes/scenes.json`을 고친 뒤 `node scenes/make-prompts.js`로 `PROMPTS.md`를 다시 만듭니다.
+
+## 프롬프트 룰 (server.js의 `buildFortunePrompt`)
+
+- 시니컬하지만 귀여운 직장인 유머로 씁니다. 월요병, 커피, 빌드 오류, 칼퇴 실패 같은 키워드를 쓰고, 2문장을 넘기지 않습니다.
+- 고른 그림의 장면을 알려 주고, 그 상황을 읽는 사람의 하루로 바꿔 쓰게 합니다.
+- 응답은 JSON 스키마로 강제합니다. 운세, 제목, 지수 2개, 행운 아이템을 받습니다.
+- 그림 프롬프트(`scenes.json`의 `style`)는 `"Cute 2D cartoon sticker illustration, clean vector style, humorous character"`로 고정합니다. 글자, 숫자, 말풍선을 금지해서 표정과 상황 묘사에만 집중하게 합니다.
 
 ## 로컬 실행
 
@@ -138,20 +150,21 @@ sudo systemctl restart jikding-fortune         # .env 바꾼 뒤
 
 ```bash
 curl -s https://기존주소/fortune/api/health      # B 방식이면 https://fortune.내도메인/api/health
-# {"ok":true,"hasKey":true,"textModel":"gemini-2.5-flash","imageModel":"imagen-3.0-generate-002",...}
+# {"ok":true,"hasKey":true,"textModel":"gemini-2.5-flash","scenes":"12/40",...}   ← 그림 12장이 들어가 있음
 
 curl -s -X POST https://기존주소/fortune/api/fortune \
   -H 'content-type: application/json' -d '{}' | head -c 400
 ```
 
-응답의 `textSource`와 `imageSource`가 `"ai"`면 AI가 만든 결과이고, `"fallback"`이면 내장 콘텐츠입니다. `notes`에 `image-quota-or-billing`이 찍혀 있으면 이미지 모델이 결제나 한도 문제로 거절한 것입니다. 이유는 `journalctl -u jikding-fortune`에 그대로 남습니다.
+- `textSource`가 `"ai"`면 Gemini가 쓴 운세이고, `"fallback"`이면 내장 문구입니다. 실패한 이유는 `journalctl -u jikding-fortune`에 남습니다.
+- `imageSource`가 `"scene"`이면 미리 넣어 둔 그림이고, `"fallback"`이면 그림이 없어서 내장 SVG를 쓴 것입니다.
 
 ## API
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, mood, image(dataURL), textSource, imageSource }` |
+| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, mood, image(그림 경로 또는 SVG dataURL), sceneId, textSource, imageSource }` |
 | `GET` | `/api/fortune/:id` | 공유 링크용. 최근 `KEEP_RESULTS`개를 메모리에 보관합니다(재시작하면 사라짐). |
-| `GET` | `/api/health` | 키 유무, 모델, 오늘 사용량 |
+| `GET` | `/api/health` | 키 유무, 모델, 들어간 그림 수, 오늘 사용량 |
 
 공유 버튼은 운세 텍스트와 `https://도메인/?id=...` 링크를 함께 복사합니다. 링크를 연 사람은 같은 결과 카드를 보고, 다시 뽑기로 자기 운세를 뽑을 수 있습니다.
