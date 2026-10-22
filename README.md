@@ -83,28 +83,48 @@ sudo ssh -T git@github.com                  # "successfully authenticated" 확�
 ### 2. 최초 설정 (한 번만)
 
 ```bash
-sudo apt-get update && sudo apt-get install -y git
 sudo git clone git@github.com:heewon0924-cmyk/jikding-fortune.git /opt/jikding-fortune
-sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git DOMAIN=fortune.example.com \
+sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git \
   bash /opt/jikding-fortune/deploy/setup-server.sh
 sudo nano /opt/jikding-fortune/.env          # GEMINI_API_KEY 입력
 sudo systemctl restart jikding-fortune
 ```
 
-`setup-server.sh`가 하는 일:
-- Node 20, git, Nginx를 설치합니다.
-- `fortune` 서비스 계정을 만들고 코드를 clone한 뒤 `.env`를 만듭니다.
-- systemd 서비스를 등록하고 Nginx 설정을 연결합니다.
+`setup-server.sh`는 앱을 `127.0.0.1:3000`에 띄우는 것까지 합니다.
+- Node 20, git, Nginx는 **없을 때만** 설치합니다.
+- `fortune` 서비스 계정을 만들고 `.env`를 만듭니다.
+- systemd 서비스를 등록합니다.
 
-### 3. HTTPS와 방화벽
+`DOMAIN`을 주지 않으면 Nginx 설정은 건드리지 않습니다. 이미 돌고 있는 사이트가 있다면 아래 3번 중 하나를 고르세요.
+
+### 3. Nginx에 연결하기
+
+이미 다른 사이트(예: 폭풍을 부르는 섬)를 서비스하고 있다면 Nginx를 다시 설치할 필요가 없습니다. 둘 중 하나를 고르세요.
+
+**A. 기존 주소 아래 `/fortune/`으로 붙이기 (도메인 추가 없음, 인증서 그대로)**
+
+기존 사이트 설정(`/etc/nginx/sites-available/island` 등)의 `server { }` 블록 안, `location / {` 위에
+`deploy/nginx-fortune-location.conf`의 내용을 붙여 넣습니다.
 
 ```bash
-sudo apt-get install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d fortune.example.com
-sudo ufw allow OpenSSH && sudo ufw allow 'Nginx Full' && sudo ufw enable
+sudo nano /etc/nginx/sites-available/island     # 붙여 넣기
+sudo nginx -t && sudo systemctl reload nginx
+# → https://기존주소/fortune/
 ```
 
-클라우드 콘솔의 보안 그룹에서도 22(SSH)·80·443 포트를 열어 두세요. 3000 포트는 열지 않습니다(앱은 127.0.0.1에서만 받습니다).
+certbot이 만든 `listen 443` 블록이 따로 있다면, 그 블록 안에 붙여 넣어야 HTTPS에서 열립니다.
+
+**B. 서브도메인으로 따로 띄우기 (예: `fortune.내도메인`)**
+
+DNS에 서브도메인 A 레코드를 서버 IP로 추가한 다음 실행합니다.
+
+```bash
+sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git DOMAIN=fortune.내도메인 \
+  bash /opt/jikding-fortune/deploy/setup-server.sh
+sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사이트 때 이미 설치됨
+```
+
+**방화벽**: 기존 사이트가 이미 80/443을 열어 두었으니 추가로 열 포트는 없습니다. 3000 포트는 열지 마세요(앱은 127.0.0.1에서만 받습니다).
 휴대폰의 클립보드 복사와 공유 창은 **HTTPS에서만** 확실하게 동작합니다.
 
 ### 4. 업데이트 배포 / 운영 명령
@@ -120,10 +140,10 @@ sudo systemctl restart jikding-fortune         # .env 바꾼 뒤
 ## 확인
 
 ```bash
-curl -s https://fortune.example.com/api/health
+curl -s https://기존주소/fortune/api/health      # B 방식이면 https://fortune.내도메인/api/health
 # {"ok":true,"hasKey":true,"textModel":"gemini-2.5-flash","imageModel":"imagen-3.0-generate-002",...}
 
-curl -s -X POST https://fortune.example.com/api/fortune \
+curl -s -X POST https://기존주소/fortune/api/fortune \
   -H 'content-type: application/json' -d '{"name":"김대리"}' | head -c 400
 ```
 

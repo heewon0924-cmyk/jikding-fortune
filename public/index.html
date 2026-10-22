@@ -247,7 +247,7 @@
     const minWait = new Promise((r) => setTimeout(r, 1200)); // 로딩 문구를 한 번은 보여준다
 
     try {
-      const res = await fetch('/api/fortune', {
+      const res = await fetch('api/fortune', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
@@ -362,7 +362,7 @@
     const id = new URLSearchParams(location.search).get('id');
     if (!id) return;
     try {
-      const res = await fetch(`/api/fortune/${encodeURIComponent(id)}`);
+      const res = await fetch(`api/fortune/${encodeURIComponent(id)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       await preload(data.image);
