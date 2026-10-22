@@ -141,7 +141,7 @@ curl -s https://기존주소/fortune/api/health      # B 방식이면 https://fo
 # {"ok":true,"hasKey":true,"textModel":"gemini-2.5-flash","imageModel":"imagen-3.0-generate-002",...}
 
 curl -s -X POST https://기존주소/fortune/api/fortune \
-  -H 'content-type: application/json' -d '{"name":"김대리"}' | head -c 400
+  -H 'content-type: application/json' -d '{}' | head -c 400
 ```
 
 응답의 `textSource`와 `imageSource`가 `"ai"`면 AI가 만든 결과이고, `"fallback"`이면 내장 콘텐츠입니다. `notes`에 `image-quota-or-billing`이 찍혀 있으면 이미지 모델이 결제나 한도 문제로 거절한 것입니다. 이유는 `journalctl -u jikding-fortune`에 그대로 남습니다.
@@ -150,7 +150,7 @@ curl -s -X POST https://기존주소/fortune/api/fortune \
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| `POST` | `/api/fortune` | body `{ "name": "선택" }` → `{ id, title, fortune, indices[{label,value}], luckyItem, mood, image(dataURL), textSource, imageSource }` |
+| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, mood, image(dataURL), textSource, imageSource }` |
 | `GET` | `/api/fortune/:id` | 공유 링크용. 최근 `KEEP_RESULTS`개를 메모리에 보관합니다(재시작하면 사라짐). |
 | `GET` | `/api/health` | 키 유무, 모델, 오늘 사용량 |
 

@@ -36,7 +36,7 @@ const INDEX_POOL = [
 
 const MOODS = ['tired', 'happy', 'panic', 'smug', 'sleepy'];
 
-function buildFortunePrompt({ name, weekday }) {
+function buildFortunePrompt({ weekday }) {
   return [
     '너는 직장인과 개발자를 위한 "오늘의 운세" 작가다.',
     '',
@@ -55,7 +55,7 @@ function buildFortunePrompt({ name, weekday }) {
     '- 캐릭터는 동물이나 사물(고양이, 오리, 감자, 머그컵, 노트북 등)로 귀엽게. 실존 인물 금지.',
     '- 이미지 안에 글자·말풍선·숫자가 들어가지 않도록, 표정과 소품, 몸짓으로만 상황을 묘사.',
     '',
-    `오늘은 ${weekday}요일이다.` + (name ? ` 운세를 볼 사람의 이름(별명)은 "${name}"이다. 운세에 자연스럽게 한 번 불러줘도 좋다.` : ''),
+    `오늘은 ${weekday}요일이다.`,
     '매번 다른 내용이 나오도록 신선한 상황을 골라라.',
   ].join('\n');
 }
@@ -180,9 +180,9 @@ async function callGoogle(model, method, body, timeoutMs) {
   return data;
 }
 
-async function generateFortuneText({ name, weekday }) {
+async function generateFortuneText({ weekday }) {
   const data = await callGoogle(CONFIG.textModel, 'generateContent', {
-    contents: [{ role: 'user', parts: [{ text: buildFortunePrompt({ name, weekday }) }] }],
+    contents: [{ role: 'user', parts: [{ text: buildFortunePrompt({ weekday }) }] }],
     generationConfig: {
       temperature: 1.1,
       maxOutputTokens: 1024,
@@ -282,9 +282,6 @@ app.post('/api/fortune', async (req, res) => {
     return res.status(429).json({ error: '운세는 천천히… 1분 뒤에 다시 뽑아주세요.' });
   }
 
-  const name = typeof req.body?.name === 'string'
-    ? req.body.name.replace(/[\r\n"`<>]/g, '').trim().slice(0, 12)
-    : '';
   const weekday = WEEKDAYS[new Date().getDay()];
   const notes = [];
 
@@ -292,7 +289,7 @@ app.post('/api/fortune', async (req, res) => {
   let textSource = 'ai';
   if (CONFIG.apiKey && useDaily('text', CONFIG.dailyTextLimit)) {
     try {
-      fortune = await generateFortuneText({ name, weekday });
+      fortune = await generateFortuneText({ weekday });
     } catch (e) {
       console.warn('[text] 실패:', e.message);
       notes.push('text-fallback');
@@ -319,7 +316,6 @@ app.post('/api/fortune', async (req, res) => {
   const result = {
     id: crypto.randomBytes(6).toString('base64url'),
     createdAt: new Date().toISOString(),
-    name,
     title: fortune.title,
     fortune: fortune.fortune,
     indices: fortune.indices,

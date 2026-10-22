@@ -73,12 +73,6 @@
   @keyframes bob { 50% { transform: translateY(-6px); } }
   .intro h2 { margin: 0; font-size: 22px; letter-spacing: -.03em; }
   .intro p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
-  .name-input {
-    width: 100%; max-width: 260px;
-    border: 1px solid var(--line); background: var(--bg); color: var(--ink);
-    border-radius: 14px; padding: 12px 14px; font-size: 16px; text-align: center; outline: none;
-  }
-  .name-input:focus { border-color: var(--accent); }
 
   .btn {
     appearance: none; border: 0; cursor: pointer;
@@ -110,9 +104,7 @@
     background: var(--accent-soft); display: grid; place-items: center;
   }
   .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .title-row h2 { margin: 0; font-size: 19px; letter-spacing: -.03em; }
-  .who { font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 3px 8px; border-radius: 999px; }
+  .title { margin: 0; font-size: 19px; letter-spacing: -.03em; }
   .fortune { margin: 0; font-size: 16px; line-height: 1.65; word-break: keep-all; }
   .indices { display: grid; gap: 10px; }
   .idx-head { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
@@ -147,7 +139,6 @@
     <div class="crystal" aria-hidden="true">🔮</div>
     <h2>오늘 당신의 업무 운은?</h2>
     <p>버튼 한 번이면 AI가<br>오늘의 야근·월루 지수를 알려드립니다.</p>
-    <input class="name-input" id="name" maxlength="12" placeholder="이름 또는 별명 (선택)" autocomplete="off" enterkeyhint="go">
     <button class="btn btn-primary" id="btn-draw">오늘의 운세 뽑기</button>
     <p class="error hidden" id="error"></p>
   </section>
@@ -161,10 +152,7 @@
   <!-- 3. 결과 -->
   <section class="card result hidden" id="view-result">
     <div class="art"><img id="r-img" alt="오늘의 운세 캐릭터"></div>
-    <div class="title-row">
-      <h2 id="r-title"></h2>
-      <span class="who hidden" id="r-name"></span>
-    </div>
+    <h2 class="title" id="r-title"></h2>
     <p class="fortune" id="r-fortune"></p>
     <div class="indices" id="r-indices"></div>
     <div class="lucky">오늘의 행운 아이템 · <b id="r-lucky"></b></div>
@@ -200,7 +188,8 @@
   const d = new Date();
   $('today').textContent = `${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]})`;
 
-  try { $('name').value = localStorage.getItem('fortune-name') || ''; } catch (_) {}
+  // 예전 버전이 저장해 둔 이름을 지운다
+  try { localStorage.removeItem('fortune-name'); } catch (_) {}
 
   function show(name) {
     const visible = Object.values(views).find((v) => !v.classList.contains('hidden'));
@@ -238,8 +227,6 @@
   }
 
   async function draw() {
-    const name = $('name').value.trim();
-    try { localStorage.setItem('fortune-name', name); } catch (_) {}
     showError('');
     $('btn-draw').disabled = true;
     show('loading');
@@ -250,7 +237,7 @@
       const res = await fetch('api/fortune', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
+        body: '{}',
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || '운세 서버가 잠시 자리를 비웠어요.');
@@ -281,8 +268,6 @@
     $('r-title').textContent = data.title;
     $('r-fortune').textContent = data.fortune;
     $('r-lucky').textContent = data.luckyItem;
-    $('r-name').textContent = data.name ? `${data.name} 님` : '';
-    $('r-name').classList.toggle('hidden', !data.name);
 
     const box = $('r-indices');
     box.innerHTML = '';
@@ -304,9 +289,8 @@
   }
 
   function shareText(data) {
-    const who = data.name ? `${data.name} 님의 ` : '';
     const lines = [
-      `🔮 ${who}오늘의 직딩 운세 — ${data.title}`,
+      `🔮 오늘의 직딩 운세 — ${data.title}`,
       data.fortune,
       data.indices.map((i) => `· ${i.label} ${i.value}%`).join('\n'),
       `🍀 행운 아이템: ${data.luckyItem}`,
@@ -374,7 +358,6 @@
   }
 
   $('btn-draw').addEventListener('click', draw);
-  $('name').addEventListener('keydown', (e) => { if (e.key === 'Enter') draw(); });
   $('btn-again').addEventListener('click', again);
   $('btn-share').addEventListener('click', share);
 
