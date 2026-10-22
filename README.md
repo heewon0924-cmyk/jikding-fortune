@@ -1,6 +1,6 @@
-# 🔮 오늘의 직딩 운세 뽑기
+# 🔮 오늘의 운세 뽑기
 
-버튼을 누르면 B급 캐릭터 그림 한 장과, 그 그림에 맞춰 AI가 쓴 직장인 공감 운세 한두 줄을 카드로 보여 주는 모바일 웹앱입니다.
+버튼을 누르면 B급 캐릭터 그림 한 장과, 그 그림에 맞춰 AI가 쓴 가볍고 재치 있는 운세 한두 줄을 카드로 보여 주는 모바일 웹앱입니다.
 빌드 과정이 없습니다. `server.js` 하나와 `public/index.html` 하나로 돌아갑니다.
 
 ```
@@ -9,7 +9,7 @@ jikding-fortune/
 ├── public/index.html              모바일 프론트엔드 (Vanilla JS, CSS 내장)
 ├── public/img/                    캐릭터 그림 (scenes.json 의 id 와 같은 파일 이름)
 ├── scenes/
-│   ├── scenes.json                그림 장면 40개 (주제, 기분, 한국어 설명, 영어 프롬프트)
+│   ├── scenes.json                그림 장면 40개 (주제 8개 × 5, 기분, 한국어 설명, 영어 프롬프트)
 │   ├── PROMPTS.md                 Gemini 앱에 붙여 넣을 프롬프트 모음 (make-prompts.js 가 만듦)
 │   └── make-prompts.js            scenes.json → PROMPTS.md
 ├── .env.example                   환경 변수 예시
@@ -50,9 +50,9 @@ jikding-fortune/
 
 ## 프롬프트 룰 (server.js의 `buildFortunePrompt`)
 
-- 시니컬하지만 귀여운 직장인 유머로 씁니다. 월요병, 커피, 빌드 오류, 칼퇴 실패 같은 키워드를 쓰고, 2문장을 넘기지 않습니다.
+- 가볍고 재치 있는 일상 운세로 씁니다. 돈, 연애, 건강, 사람 관계, 사소한 행운, 휴식, 먹을 것이 소재이고, 일·공부 이야기는 가끔만 섞습니다. 2문장을 넘기지 않습니다.
 - 고른 그림의 장면을 알려 주고, 그 상황을 읽는 사람의 하루로 바꿔 쓰게 합니다.
-- 응답은 JSON 스키마로 강제합니다. 운세, 제목, 지수 2개, 행운 아이템을 받습니다.
+- 응답은 JSON 스키마로 강제합니다. 운세, 제목, 분야별 운(금전·연애·건강·대인) 점수, 행운의 아이템·색·숫자, 한 줄 조언을 받습니다.
 - 그림 프롬프트(`scenes.json`의 `style`)는 `"Cute 2D cartoon sticker illustration, clean vector style, humorous character"`로 고정합니다. 글자, 숫자, 말풍선을 금지해서 표정과 상황 묘사에만 집중하게 합니다.
 
 ## 로컬 실행
@@ -163,7 +163,7 @@ curl -s -X POST https://기존주소/fortune/api/fortune \
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, mood, image(그림 경로 또는 SVG dataURL), sceneId, textSource, imageSource }` |
+| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, luckyColor, luckyNumber, advice, mood, image(그림 경로 또는 SVG dataURL), sceneId, textSource, imageSource }` |
 | `GET` | `/api/fortune/:id` | 공유 링크용. 최근 `KEEP_RESULTS`개를 메모리에 보관합니다(재시작하면 사라짐). |
 | `GET` | `/api/health` | 키 유무, 모델, 들어간 그림 수, 오늘 사용량 |
 

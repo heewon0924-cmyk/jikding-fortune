@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f1ec">
-<meta name="description" content="업무 중 몰래 뽑는 오늘의 직딩 운세">
-<meta property="og:title" content="오늘의 직딩 운세">
-<meta property="og:description" content="야근 지수, 월루 지수… 오늘 나의 운세는?">
+<meta name="description" content="가볍게 뽑아 보는 오늘의 운세">
+<meta property="og:title" content="오늘의 운세">
+<meta property="og:description" content="금전운, 연애운, 행운의 색… 오늘 나의 운세는?">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
-<title>오늘의 직딩 운세</title>
+<title>오늘의 운세</title>
 <style>
   :root {
     --bg: #f4f1ec;
@@ -106,13 +106,17 @@
   .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .title { margin: 0; font-size: 19px; letter-spacing: -.03em; }
   .fortune { margin: 0; font-size: 16px; line-height: 1.65; word-break: keep-all; }
-  .indices { display: grid; gap: 10px; }
+  .indices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
   .idx-head { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
   .idx-head b { font-variant-numeric: tabular-nums; }
   .bar { height: 8px; background: var(--accent-soft); border-radius: 999px; overflow: hidden; }
   .bar > i { display: block; height: 100%; width: 0; background: var(--bar); border-radius: inherit; transition: width .9s cubic-bezier(.2,.8,.2,1); }
-  .lucky { font-size: 13px; color: var(--muted); }
-  .lucky b { color: var(--ink); }
+  .lucky { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .lucky div { background: var(--accent-soft); border-radius: 14px; padding: 10px 6px; text-align: center; }
+  .lucky span { display: block; font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+  .lucky b { font-size: 14px; word-break: keep-all; }
+  .advice { margin: 0; font-size: 14px; line-height: 1.5; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 14px; }
+  .advice b { color: var(--accent); }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
 
   .error { color: #d64545; font-size: 14px; text-align: center; margin: 0; }
@@ -130,15 +134,15 @@
 <body>
 <main class="wrap">
   <header>
-    <h1>🔮 오늘의 직딩 운세</h1>
+    <h1>🔮 오늘의 운세</h1>
     <span class="date" id="today"></span>
   </header>
 
   <!-- 1. 초기 화면 -->
   <section class="card intro" id="view-intro">
     <div class="crystal" aria-hidden="true">🔮</div>
-    <h2>오늘 당신의 업무 운은?</h2>
-    <p>버튼 한 번이면 AI가<br>오늘의 야근·월루 지수를 알려드립니다.</p>
+    <h2>오늘 당신의 운은?</h2>
+    <p>버튼 한 번이면 AI가<br>오늘의 금전운·연애운과 행운의 색을 알려드립니다.</p>
     <button class="btn btn-primary" id="btn-draw">오늘의 운세 뽑기</button>
     <p class="error hidden" id="error"></p>
   </section>
@@ -155,14 +159,19 @@
     <h2 class="title" id="r-title"></h2>
     <p class="fortune" id="r-fortune"></p>
     <div class="indices" id="r-indices"></div>
-    <div class="lucky">오늘의 행운 아이템 · <b id="r-lucky"></b></div>
+    <div class="lucky">
+      <div><span>행운의 아이템</span><b id="r-lucky"></b></div>
+      <div><span>행운의 색</span><b id="r-color"></b></div>
+      <div><span>행운의 숫자</span><b id="r-number"></b></div>
+    </div>
+    <p class="advice"><b>💡 오늘의 조언</b> · <span id="r-advice"></span></p>
     <div class="actions">
       <button class="btn btn-ghost" id="btn-again">🔄 다시 뽑기</button>
       <button class="btn btn-primary" id="btn-share" style="max-width:none">📋 복사 / 공유</button>
     </div>
   </section>
 
-  <footer id="footer">재미로만 봐주세요 · 실제 야근과는 무관할 수도 있습니다</footer>
+  <footer id="footer">재미로만 봐주세요 · 맞으면 기분 좋고, 틀리면 운세 탓</footer>
 </main>
 <div class="toast" id="toast" role="status"></div>
 
@@ -172,14 +181,14 @@
   const views = { intro: $('view-intro'), loading: $('view-loading'), result: $('view-result') };
 
   const LOADING_LINES = [
+    '별자리 정렬하는 중...',
+    '네잎클로버 세는 중...',
+    '행운의 색 섞는 중...',
+    '오늘의 기운 충전 중...',
+    '수정 구슬 닦는 중...',
+    '지갑 사정 엿보는 중...',
+    '귀인 위치 탐색 중...',
     '퇴근 시간 계산 중...',
-    '커피 수혈 여부 점검 중...',
-    '빌드 로그에서 운세 추출 중...',
-    '팀장님 기분 예보 확인 중...',
-    '월급날까지 남은 날 세는 중...',
-    '슬랙 알림 음소거 시도 중...',
-    '점심 메뉴 후보 압축 중...',
-    '야근 확률 재계산 중...',
   ];
 
   let current = null;
@@ -268,6 +277,10 @@
     $('r-title').textContent = data.title;
     $('r-fortune').textContent = data.fortune;
     $('r-lucky').textContent = data.luckyItem;
+    $('r-color').textContent = data.luckyColor || '-';
+    $('r-number').textContent = data.luckyNumber ?? '-';
+    $('r-advice').textContent = data.advice || '';
+    $('r-advice').parentElement.classList.toggle('hidden', !data.advice);
 
     const box = $('r-indices');
     box.innerHTML = '';
@@ -290,12 +303,13 @@
 
   function shareText(data) {
     const lines = [
-      `🔮 오늘의 직딩 운세 — ${data.title}`,
+      `🔮 오늘의 운세 — ${data.title}`,
       data.fortune,
       data.indices.map((i) => `· ${i.label} ${i.value}%`).join('\n'),
-      `🍀 행운 아이템: ${data.luckyItem}`,
+      `🍀 행운의 아이템 ${data.luckyItem} · 색 ${data.luckyColor} · 숫자 ${data.luckyNumber}`,
+      data.advice ? `💡 ${data.advice}` : '',
     ];
-    return lines.join('\n');
+    return lines.filter(Boolean).join('\n');
   }
 
   async function copyText(text) {
@@ -325,7 +339,7 @@
       toast('복사 완료! 단톡방에 붙여넣으세요 ✨');
     } catch (_) {
       if (navigator.share) {
-        try { await navigator.share({ title: '오늘의 직딩 운세', text, url }); } catch (_) {}
+        try { await navigator.share({ title: '오늘의 운세', text, url }); } catch (_) {}
       } else {
         toast('복사에 실패했어요. 화면을 캡처해주세요 🙏');
       }

@@ -11,258 +11,258 @@
 
 진행: **0 / 40** 장
 
-## ☕ 커피
+## 💰 금전
 
-### ⬜ `coffee-01` — 커다란 머그컵을 두 손으로 껴안고 행복해하는 감자
+### ⬜ `money-01` — 길에서 동전을 주워 반짝이는 눈으로 들어 올린 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character hugging a giant steaming coffee mug with both arms, eyes closed in bliss.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster holding up a shiny coin it just found on the street, eyes sparkling.
 ```
 
-### ⬜ `coffee-02` — 빈 커피컵 탑 옆에서 눈 밑이 퀭한 오리
+### ⬜ `money-02` — 돼지 저금통 위에 올라앉아 뿌듯해하는 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A tired duck with dark circles under its eyes, sitting next to a tall tower of empty coffee cups.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat sitting proudly on top of a plump pink piggy bank.
 ```
 
-### ⬜ `coffee-03` — 커피 머신이 고장 나서 절규하는 고양이
+### ⬜ `money-03` — 지갑에서 지폐가 날개 달고 날아가 당황한 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat clutching its cheeks and screaming in front of a broken coffee machine with a little smoke puff.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character panicking as banknotes with tiny wings fly out of its open wallet.
 ```
 
-### ⬜ `coffee-04` — 선글라스를 끼고 아이스 아메리카노를 쪽쪽 마시는 햄스터
+### ⬜ `money-04` — 네잎클로버와 금화를 안고 웃는 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster wearing tiny sunglasses, confidently sipping an iced coffee through a straw.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin hugging a four-leaf clover and a gold coin, smiling widely.
 ```
 
-### ⬜ `coffee-05` — 커피잔에 얼굴을 반쯤 담근 채 졸고 있는 펭귄
+### ⬜ `money-05` — 텅 빈 지갑을 거꾸로 털어 보는 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A sleepy penguin dozing off with its beak resting on the rim of a coffee cup.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck shaking an empty upside-down wallet with only a single moth flying out.
 ```
 
-## 🛠 빌드
+## 💕 연애
 
-### ⬜ `build-01` — 빨간 경고 화면이 뜬 노트북 앞에서 멘붕 온 오리
+### ⬜ `love-01` — 하트 풍선을 들고 수줍게 웃는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck with wide panicked eyes staring at a laptop whose screen glows red with a warning triangle icon.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu holding a red heart-shaped balloon, blushing shyly.
 ```
 
-### ⬜ `build-02` — 초록 체크 화면 앞에서 만세 부르는 감자
+### ⬜ `love-02` — 휴대폰 화면을 보고 얼굴이 새빨개진 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character cheering with both arms up in front of a laptop showing a big green check mark.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat staring at a smartphone with its face turning bright red, steam puffing from its ears.
 ```
 
-### ⬜ `build-03` — 노트북에 얼굴을 파묻고 녹아내린 고양이
+### ⬜ `love-03` — 꽃다발을 등 뒤에 숨기고 윙크하는 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat melting into a puddle on a desk with its face flat on a laptop keyboard.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck winking while hiding a bouquet of flowers behind its back.
 ```
 
-### ⬜ `build-04` — 고무 오리 인형에게 설명하며 뿌듯해하는 시바견
+### ⬜ `love-04` — 하트 쿠션을 껴안고 꿈꾸듯 조는 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu proudly explaining something to a small yellow rubber duck toy on the desk, pointing at a laptop.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster dreamily dozing while hugging a heart-shaped cushion, little hearts floating above.
 ```
 
-### ⬜ `build-05` — 불타는 서버 랙 앞에서 소화기를 든 햄스터
+### ⬜ `love-05` — 창가에서 턱을 괴고 한숨 쉬는 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster holding a tiny fire extinguisher in front of a cartoon server rack with small flames.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character resting its chin on its hand by a window, sighing with a tiny cloud above.
 ```
 
-## 🗣 회의
+## 💪 건강
 
-### ⬜ `meeting-01` — 회의실 의자에서 고개를 꾸벅이는 감자
+### ⬜ `health-01` — 요가 매트 위에서 다리를 쭉 뻗고 스트레칭하는 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character nodding off in a meeting room chair, head drooping, in front of a whiteboard with blank charts.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin doing a big stretch on a yoga mat, looking refreshed.
 ```
 
-### ⬜ `meeting-02` — 끝없이 늘어진 회의 안건 종이에 파묻힌 펭귄
+### ⬜ `health-02` — 줄넘기를 하다 지쳐 바닥에 대자로 누운 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin buried under an endlessly long scroll of paper that spills onto the floor.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character lying flat on the floor exhausted next to a jump rope.
 ```
 
-### ⬜ `meeting-03` — 노트북 뒤에 숨어 몰래 간식 먹는 고양이
+### ⬜ `health-03` — 녹색 채소 주스를 들고 건강미 뽐내는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat secretly eating a snack while hiding behind an open laptop during a meeting.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu flexing proudly while holding a green vegetable smoothie.
 ```
 
-### ⬜ `meeting-04` — 화상회의 중 갑자기 카메라가 켜져 놀란 오리
+### ⬜ `health-04` — 포근한 이불 속에서 푹 자는 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck in pajamas startled in front of a laptop webcam that just turned on, feathers puffed up.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat sleeping soundly tucked under a fluffy blanket with a nightcap.
 ```
 
-### ⬜ `meeting-05` — 회의가 일찍 끝나 문 밖으로 뛰쳐나가는 햄스터
+### ⬜ `health-05` — 체중계 위에서 눈이 휘둥그레진 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster joyfully sprinting out of a meeting room door, little motion lines behind it.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster standing on a bathroom scale with wide shocked eyes, cheeks full of seeds.
 ```
 
-## 🌙 야근
+## 🤝 사람
 
-### ⬜ `overtime-01` — 깜깜한 사무실에서 모니터 불빛만 받으며 일하는 감자
+### ⬜ `people-01` — 친구와 하이파이브하는 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character working alone at night, lit only by a glowing monitor, with a crescent moon visible through the window.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: Two cheerful ducks giving each other an enthusiastic high five.
 ```
 
-### ⬜ `overtime-02` — 책상 밑에 담요 덮고 자는 시바견
+### ⬜ `people-02` — 새로 사귄 친구에게 간식을 나눠 주는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu curled up asleep under an office desk with a small blanket.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu generously sharing a snack with a small new friend bird.
 ```
 
-### ⬜ `overtime-03` — 시계 바늘이 밤 11시를 가리키자 놀라는 펭귄
+### ⬜ `people-03` — 단체 사진에서 혼자 눈 감은 걸 발견한 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin gasping at a wall clock whose hands point late at night, with stars outside the window.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin gasping while looking at a printed group photo of penguins.
 ```
 
-### ⬜ `overtime-04` — 컵라면을 먹으며 키보드를 치는 오리
+### ⬜ `people-04` — 작은 선물 상자를 받고 기뻐하는 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck eating instant cup noodles with one wing while typing on a keyboard with the other.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character delighted to receive a small wrapped gift box with a bow.
 ```
 
-### ⬜ `overtime-05` — 야근 중 몰래 치킨을 시켜 먹는 고양이
+### ⬜ `people-05` — 끝없이 재잘대는 참새들 사이에서 귀가 접힌 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat happily eating fried chicken at its desk late at night, crumbs everywhere.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat with flattened ears politely listening while surrounded by many tiny chattering sparrows.
 ```
 
-## 🍚 점심
+## 🍀 사소한 행운
 
-### ⬜ `lunch-01` — 메뉴판 두 개를 들고 고민에 빠진 감자
+### ⬜ `luck-01` — 무지개 아래서 만세 부르는 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character holding two restaurant menus, eyes spinning in indecision.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster cheering with both arms up under a bright rainbow.
 ```
 
-### ⬜ `lunch-02` — 김이 나는 국밥 앞에서 숟가락 들고 신난 시바견
+### ⬜ `luck-02` — 자판기에서 음료가 두 개 나와 의기양양한 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu excitedly holding a spoon in front of a steaming bowl of Korean soup with rice.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck looking smug as a vending machine drops two drinks instead of one.
 ```
 
-### ⬜ `lunch-03` — 점심 먹고 배부른 채 책상에서 조는 햄스터
+### ⬜ `luck-03` — 머리 위로 떨어지는 별똥별에 깜짝 놀란 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster with a round full belly dozing off at its desk after lunch.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu startled as a cute shooting star zooms right over its head.
 ```
 
-### ⬜ `lunch-04` — 긴 식당 줄 맨 끝에 서서 한숨 쉬는 펭귄
+### ⬜ `luck-04` — 버스 정류장에 도착하자마자 버스가 와서 신난 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin sighing at the very end of a long line of tiny cartoon customers outside a restaurant.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin happily hopping as a bus arrives exactly when it reaches the bus stop.
 ```
 
-### ⬜ `lunch-05` — 도시락을 자랑스럽게 펼쳐 보이는 오리
+### ⬜ `luck-05` — 햇살 좋은 잔디밭에서 네잎클로버를 베고 누운 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck proudly opening a neat bento lunch box with sparkles around it.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat napping on sunny grass using a big four-leaf clover as a pillow.
 ```
 
-## 🔔 알림
+## 🛋 휴식
 
-### ⬜ `slack-01` — 휴대폰 알림이 쏟아져 깜짝 놀란 고양이
+### ⬜ `rest-01` — 해먹에 누워 낮잠 자는 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat jumping in surprise as a smartphone explodes with many red notification dots.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character napping peacefully in a hammock between two palm trees.
 ```
 
-### ⬜ `slack-02` — 헤드폰을 쓰고 알림을 무시하는 시바견
+### ⬜ `rest-02` — 거품 목욕을 즐기는 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu wearing big headphones with eyes closed, calmly ignoring a buzzing phone beside it.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck relaxing in a bubble bath with a tiny rubber duck.
 ```
 
-### ⬜ `slack-03` — 끝없이 쌓인 메시지 말풍선 아이콘 더미에 깔린 감자
+### ⬜ `rest-03` — 소파에서 리모컨을 쥐고 여유 부리는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character squashed under a pile of blank chat bubble icons.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu lounging on a sofa holding a remote control, totally relaxed.
 ```
 
-### ⬜ `slack-04` — 퇴근 직전 울리는 휴대폰을 보고 얼어붙은 오리
+### ⬜ `rest-04` — 책상에 엎드려 녹아내린 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck frozen mid-step with a coat and bag on, staring at a ringing phone on the desk.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster melted flat on a desk next to a stack of books, completely drained.
 ```
 
-### ⬜ `slack-05` — 휴대폰을 비행기 모드로 바꾸고 해맑게 웃는 햄스터
+### ⬜ `rest-05` — 따뜻한 차를 마시며 창밖 비를 보는 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster grinning while switching a phone to airplane mode, with a tiny airplane icon floating above.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin sipping warm tea by a window while gentle rain falls outside.
 ```
 
-## 💸 월급날
+## 🍜 맛있는 것
 
-### ⬜ `payday-01` — 지폐 비를 맞으며 춤추는 펭귄
+### ⬜ `food-01` — 김이 나는 라면 앞에서 젓가락 들고 신난 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin dancing joyfully under a shower of falling cartoon banknotes.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat excitedly holding chopsticks in front of a steaming bowl of ramen.
 ```
 
-### ⬜ `payday-02` — 월급이 스쳐 지나가는 지갑을 멍하니 보는 감자
+### ⬜ `food-02` — 거대한 딸기 케이크를 혼자 차지한 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character staring blankly at an open wallet as banknotes fly out of it with little wings.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster proudly guarding a giant strawberry cake all to itself.
 ```
 
-### ⬜ `payday-03` — 쇼핑백을 잔뜩 들고 의기양양한 고양이
+### ⬜ `food-03` — 아이스크림이 녹아 흘러내려 당황한 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat strutting proudly while carrying many shopping bags.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin panicking as its ice cream cone melts and drips everywhere.
 ```
 
-### ⬜ `payday-04` — 카드 명세서를 보고 기절 직전인 시바견
+### ⬜ `food-04` — 배부르게 먹고 배를 두드리며 조는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu about to faint while holding a very long receipt.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu with a round full belly dozing after a big meal, patting its tummy.
 ```
 
-### ⬜ `payday-05` — 돼지 저금통을 베고 자는 햄스터
+### ⬜ `food-05` — 갓 구운 붕어빵을 양손에 든 감자
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster sleeping peacefully with its head resting on a pink piggy bank.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character holding fresh fish-shaped pastries in both hands, steam rising.
 ```
 
-## 🏃 칼퇴
+## 📚 일·공부
 
-### ⬜ `leave-01` — 가방을 메고 사무실 문을 박차고 나가는 오리
+### ⬜ `work-01` — 마감 시계를 보고 땀 흘리며 타자 치는 오리
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck with a backpack bursting happily out of an office door toward a sunset.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A duck typing frantically on a laptop, sweating, with a ticking clock beside it.
 ```
 
-### ⬜ `leave-02` — 퇴근 직전 상사 그림자가 드리워져 굳어 버린 감자
+### ⬜ `work-02` — 완성한 일을 들고 만세 부르는 펭귄
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A potato character frozen in fear holding a bag, as a big shadow of a tall figure falls over it.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A penguin cheering while holding up a finished document with a gold star sticker.
 ```
 
-### ⬜ `leave-03` — 6시 정각에 노트북을 덮으며 윙크하는 고양이
+### ⬜ `work-03` — 책을 펼친 채 고개를 꾸벅이는 고양이
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat winking while closing a laptop lid, with a wall clock showing six o'clock.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A cat nodding off over an open book at a desk lamp.
 ```
 
-### ⬜ `leave-04` — 퇴근길 지하철에서 손잡이에 매달려 녹초가 된 펭귄
+### ⬜ `work-04` — 커피를 들고 여유롭게 노트북을 보는 시바견
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: An exhausted penguin hanging limply from a subway strap handle.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu calmly sipping coffee in front of a laptop, looking confident.
 ```
 
-### ⬜ `leave-05` — 집 소파에 녹아내린 시바견
+### ⬜ `work-05` — 서류 더미에 파묻혀 눈만 빼꼼 내민 햄스터
 
 ```
-Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A shiba inu melted into a cozy sofa at home, completely relaxed and half asleep.
+Generate an image. Cute 2D cartoon sticker illustration, clean vector style, humorous character. Single cute character in the center with an exaggerated funny facial expression. Thick clean outlines, flat pastel colors, white sticker border, plain soft background. Square 1:1 image. Absolutely no text, no letters, no numbers, no speech bubbles, no logos. Scene: A hamster buried in a tall pile of papers with only its eyes peeking out.
 ```

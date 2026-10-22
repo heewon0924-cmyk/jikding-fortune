@@ -1,4 +1,4 @@
-// 오늘의 직딩 운세 뽑기 — Express 백엔드
+// 오늘의 운세 뽑기 — Express 백엔드
 // 역할: 미리 그려 둔 캐릭터 그림(public/img) 중 하나를 고르고, 그 장면에 맞는 운세를 Gemini 로 쓴다.
 // API 키는 서버에만 있다. 키가 없거나 무료 한도를 넘기면 그림 주제에 맞춘 내장 문구로 응답하고,
 // 그림이 하나도 없으면 기분별 SVG 캐릭터를 보여 준다.
@@ -26,26 +26,34 @@ const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 // ───────────────────────────── 프롬프트 룰 ─────────────────────────────
 
-const INDEX_POOL = [
-  '야근 지수', '월루 지수', '칼퇴 확률', '커피 수혈 필요도', '빌드 성공률',
-  '회의 생존력', '점심 메뉴 결정력', '슬랙 알림 공포도', '퇴사 충동', '월급 체감 속도',
+// 카드에 막대로 나가는 분야별 운. 순서가 곧 화면 순서다.
+const CATEGORIES = [
+  { key: 'money', label: '금전운' },
+  { key: 'love', label: '연애운' },
+  { key: 'health', label: '건강운' },
+  { key: 'people', label: '대인운' },
 ];
 
 const MOODS = ['tired', 'happy', 'panic', 'smug', 'sleepy'];
 
 function buildFortunePrompt({ weekday, scene }) {
   return [
-    '너는 직장인과 개발자를 위한 "오늘의 운세" 작가다.',
+    '너는 가볍고 재치 있는 "오늘의 운세" 작가다.',
     '',
     '[톤앤매너]',
-    '- 시니컬하면서도 귀여운 직장인 유머. 읽는 사람이 피식 웃고 공감할 것.',
-    '- 월요병, 커피, 빌드 오류, 칼퇴 실패, 회의, 점심 메뉴, 슬랙 알림, 배포, 월급날 같은 공감 키워드를 활용.',
-    '- 운세 문장은 한국어 2문장 이내, 짧고 명확하게. 이모지는 최대 1개.',
-    '- 누군가를 비하하거나 불쾌하게 만드는 내용, 실제 회사·인물 언급 금지.',
+    '- 일상 운세를 피식 웃게 쓴다. 돈, 연애, 건강, 사람 관계, 사소한 행운, 휴식, 먹을 것 같은 평범한 하루가 소재다.',
+    '- 일이나 공부 이야기는 가끔만, 여러 소재 중 하나로 쓴다. 직장인 전용 유머로 몰아가지 마라.',
+    '- 너무 진지하거나 무섭게 쓰지 말고, 나쁜 운도 귀엽게 비틀어 말한다.',
+    '- 운세는 한국어 2문장 이내, 짧고 명확하게. 이모지는 최대 1개.',
+    '- 누군가를 비하하거나 불쾌하게 만드는 내용, 실존 인물·회사 언급 금지.',
     '',
-    '[지수]',
-    `- 다음 후보 중 운세 내용과 어울리는 2개를 골라 0~100 사이 값을 매긴다: ${INDEX_POOL.join(', ')}`,
-    '- 값은 운세 내용과 일관되게(야근 운세면 야근 지수가 높게).',
+    '[항목]',
+    '- title: 운세를 요약하는 6~12자 제목.',
+    '- scores: 금전운(money)·연애운(love)·건강운(health)·대인운(people)을 0~100으로. 운세 내용과 일관되게(돈 이야기가 좋으면 금전운이 높게). 넷이 모두 비슷하지 않게 높낮이를 준다.',
+    '- luckyItem: 오늘의 행운 아이템, 2~8자. 일상에서 볼 수 있는 물건.',
+    '- luckyColor: 행운의 색, 2~6자 (예: 민트색, 살구색).',
+    '- luckyNumber: 행운의 숫자, 1~99.',
+    '- advice: 오늘의 한 줄 조언, 20자 안팎. 운세와 겹치지 않게, 바로 해 볼 수 있는 행동으로.',
     '',
     ...(scene ? [
       '[그림]',
@@ -64,58 +72,56 @@ const FORTUNE_SCHEMA = {
   properties: {
     fortune: { type: 'STRING', description: '한국어 운세 1~2문장' },
     title: { type: 'STRING', description: '운세를 요약하는 6~12자 한국어 제목' },
-    indices: {
-      type: 'ARRAY',
-      items: {
-        type: 'OBJECT',
-        properties: {
-          label: { type: 'STRING' },
-          value: { type: 'INTEGER' },
-        },
-        required: ['label', 'value'],
-      },
+    scores: {
+      type: 'OBJECT',
+      properties: Object.fromEntries(CATEGORIES.map((c) => [c.key, { type: 'INTEGER', description: `${c.label} 0~100` }])),
+      required: CATEGORIES.map((c) => c.key),
     },
-    luckyItem: { type: 'STRING', description: '오늘의 행운 아이템, 한국어 2~8자' },
+    luckyItem: { type: 'STRING', description: '행운의 아이템, 한국어 2~8자' },
+    luckyColor: { type: 'STRING', description: '행운의 색, 한국어 2~6자' },
+    luckyNumber: { type: 'INTEGER', description: '행운의 숫자 1~99' },
+    advice: { type: 'STRING', description: '오늘의 한 줄 조언, 한국어 20자 안팎' },
     mood: { type: 'STRING', enum: MOODS },
   },
-  required: ['fortune', 'title', 'indices', 'luckyItem', 'mood'],
+  required: ['fortune', 'title', 'scores', 'luckyItem', 'luckyColor', 'luckyNumber', 'advice', 'mood'],
 };
 
 // ───────────────────────────── 내장 대체 콘텐츠 ─────────────────────────────
 
 // 그림 주제(scenes.json 의 topic)별 내장 문구. 키가 없거나 Gemini 가 실패해도 그림과 어긋나지 않게 한다.
+// scores 순서: 금전·연애·건강·대인
 const FALLBACK_FORTUNES = {
-  coffee: [
-    { title: '커피가 곧 혈액', fortune: '세 번째 아메리카노부터 비로소 사람이 됩니다. 네 번째부터는 신이 됩니다.', mood: 'happy', indices: [['커피 수혈 필요도', 97], ['회의 생존력', 70]], luckyItem: '텀블러' },
-    { title: '카페인 경보', fortune: '오늘 커피 없이 버티겠다는 다짐은 오전 10시에 무너집니다. 미리 두 잔 시켜 두세요.', mood: 'tired', indices: [['커피 수혈 필요도', 91], ['월루 지수', 58]], luckyItem: '샷 추가' },
+  money: [
+    { title: '주머니가 따뜻', fortune: '잊고 있던 주머니에서 지폐 한 장이 나올 운입니다. 오늘은 빨래 전에 꼭 확인하세요.', mood: 'happy', scores: [88, 55, 62, 70], luckyItem: '겨울 외투', luckyColor: '금색', advice: '안 입던 옷 주머니 뒤지기' },
+    { title: '지갑 단속의 날', fortune: '"이건 싸니까"가 다섯 번 쌓이면 큰돈이 됩니다. 장바구니는 하룻밤 재워 두세요.', mood: 'panic', scores: [34, 61, 70, 66], luckyItem: '가계부', luckyColor: '회색', advice: '장바구니 하나 비우기' },
   ],
-  build: [
-    { title: '빌드는 초록불', fortune: '오늘은 빌드가 한 번에 통과합니다. 단, 그 이유는 아무도 모릅니다.', mood: 'smug', indices: [['빌드 성공률', 92], ['월루 지수', 64]], luckyItem: '고무 오리' },
-    { title: '금요일 배포 금지', fortune: '배포 버튼 위에 손가락이 머무는 순간 우주가 말립니다. 우주의 말을 들으세요.', mood: 'panic', indices: [['빌드 성공률', 41], ['야근 지수', 79]], luckyItem: '롤백 스크립트' },
+  love: [
+    { title: '설렘 주의보', fortune: '무심코 보낸 메시지에 생각보다 좋은 답장이 옵니다. 답장을 기다리며 휴대폰을 세 번쯤 확인하게 됩니다.', mood: 'happy', scores: [58, 91, 64, 77], luckyItem: '향수', luckyColor: '분홍색', advice: '먼저 안부 문자 보내기' },
+    { title: '혼자도 괜찮아', fortune: '오늘은 연애운보다 나랑 친해지는 운이 셉니다. 좋아하는 노래를 크게 틀어도 되는 날입니다.', mood: 'smug', scores: [62, 43, 75, 68], luckyItem: '이어폰', luckyColor: '보라색', advice: '나에게 작은 선물 하기' },
   ],
-  meeting: [
-    { title: '회의의 늪', fortune: '"짧게 하나만"으로 시작한 회의가 점심을 삼킵니다. 메모장은 끝까지 비어 있습니다.', mood: 'sleepy', indices: [['회의 생존력', 35], ['월루 지수', 81]], luckyItem: '포스트잇' },
-    { title: '카메라 끄기의 기술', fortune: '오늘의 회의는 듣는 척이 핵심입니다. 고개 끄덕임 세 번이면 충분합니다.', mood: 'smug', indices: [['회의 생존력', 77], ['월루 지수', 88]], luckyItem: '이어폰' },
+  health: [
+    { title: '몸이 가벼운 날', fortune: '계단을 오르는데 이상하게 숨이 안 찹니다. 이 기세로 한 정거장 걸어 보세요.', mood: 'happy', scores: [57, 63, 93, 66], luckyItem: '운동화', luckyColor: '연두색', advice: '물 한 잔 더 마시기' },
+    { title: '꿀잠이 보약', fortune: '오늘 피로의 원인은 어젯밤의 "한 편만 더"입니다. 오늘은 휴대폰을 침대 밖에 두세요.', mood: 'sleepy', scores: [60, 52, 41, 63], luckyItem: '안대', luckyColor: '남색', advice: '30분 일찍 눕기' },
   ],
-  overtime: [
-    { title: '야근의 기운', fortune: '퇴근 직전에 "이것만 보고 가요"가 찾아옵니다. 그것만 보는 데 두 시간이 걸립니다.', mood: 'tired', indices: [['야근 지수', 92], ['칼퇴 확률', 9]], luckyItem: '컵라면' },
-    { title: '달빛 코딩', fortune: '오늘 밤 사무실의 불은 당신이 끕니다. 대신 야식 메뉴 결정권도 당신에게 있습니다.', mood: 'sleepy', indices: [['야근 지수', 85], ['점심 메뉴 결정력', 60]], luckyItem: '야식 쿠폰' },
+  people: [
+    { title: '귀인 등장', fortune: '오늘 만나는 사람 중에 의외의 도움을 주는 사람이 있습니다. 평소보다 한 번 더 웃어 주세요.', mood: 'happy', scores: [66, 70, 64, 92], luckyItem: '사탕', luckyColor: '하늘색', advice: '고맙다고 먼저 말하기' },
+    { title: '말은 짧게', fortune: '오늘은 듣는 쪽이 이기는 날입니다. 맞장구 세 번이면 분위기가 당신 편이 됩니다.', mood: 'smug', scores: [55, 61, 68, 47], luckyItem: '손수건', luckyColor: '베이지색', advice: '말하기 전에 한 박자 쉬기' },
   ],
-  lunch: [
-    { title: '점심 결정 장애', fortune: '"아무거나"라고 말한 대가로 아무거나 먹게 됩니다. 의외로 맛있습니다.', mood: 'happy', indices: [['점심 메뉴 결정력', 18], ['월루 지수', 59]], luckyItem: '제비뽑기' },
-    { title: '식곤증 주의보', fortune: '점심을 든든히 먹은 대가로 오후 2시에 눈꺼풀이 천근이 됩니다. 일어서서 일하세요.', mood: 'sleepy', indices: [['점심 메뉴 결정력', 72], ['회의 생존력', 31]], luckyItem: '박하사탕' },
+  luck: [
+    { title: '사소한 행운', fortune: '신호등이 내 앞에서 딱딱 바뀌는 날입니다. 큰 행운은 아니지만 하루 종일 기분이 좋습니다.', mood: 'happy', scores: [72, 66, 70, 74], luckyItem: '동전', luckyColor: '노란색', advice: '오늘은 새 길로 가 보기' },
+    { title: '타이밍의 신', fortune: '도착하자마자 버스가 오고, 줄을 서자마자 내 차례가 됩니다. 운을 아껴 쓰지 마세요.', mood: 'smug', scores: [69, 73, 62, 71], luckyItem: '교통카드', luckyColor: '주황색', advice: '평소 미루던 일 하나 처리하기' },
   ],
-  slack: [
-    { title: '알림 폭격 주의', fortune: '슬랙 알림이 울릴 때마다 심장이 한 박자 쉽니다. 방해 금지 모드가 오늘의 수호신입니다.', mood: 'panic', indices: [['슬랙 알림 공포도', 93], ['퇴사 충동', 47]], luckyItem: '방해 금지 모드' },
-    { title: '읽씹의 미학', fortune: '"확인했습니다" 한 마디가 오늘의 평화를 지킵니다. 이모지 하나면 더 좋습니다.', mood: 'smug', indices: [['슬랙 알림 공포도', 64], ['월루 지수', 76]], luckyItem: '👍 이모지' },
+  rest: [
+    { title: '쉬어 가는 날', fortune: '오늘은 아무것도 안 해도 운이 깎이지 않는 날입니다. 소파가 당신을 부르고 있습니다.', mood: 'sleepy', scores: [60, 58, 81, 55], luckyItem: '담요', luckyColor: '크림색', advice: '10분 멍때리기' },
+    { title: '충전 필요', fortune: '배터리가 빨간불입니다. 휴대폰 말고 당신 말입니다.', mood: 'tired', scores: [54, 50, 46, 60], luckyItem: '따뜻한 차', luckyColor: '연갈색', advice: '알림 끄고 쉬기' },
   ],
-  payday: [
-    { title: '월급 스쳐 감', fortune: '월급이 통장에 들어와 인사만 하고 떠납니다. 카드값이 먼저 알고 기다리고 있었습니다.', mood: 'tired', indices: [['월급 체감 속도', 97], ['퇴사 충동', 52]], luckyItem: '가계부' },
-    { title: '오늘은 부자', fortune: '잠깐이지만 오늘은 부자입니다. 장바구니는 내일 다시 보세요.', mood: 'happy', indices: [['월급 체감 속도', 88], ['월루 지수', 63]], luckyItem: '돼지 저금통' },
+  food: [
+    { title: '맛집 운 상승', fortune: '아무 데나 들어간 식당이 숨은 맛집일 운입니다. 오늘은 메뉴 고민을 짧게 하세요.', mood: 'happy', scores: [64, 66, 72, 70], luckyItem: '젓가락', luckyColor: '빨간색', advice: '처음 보는 메뉴 시켜 보기' },
+    { title: '야식의 유혹', fortune: '밤 10시에 떠오르는 라면은 운명이 아니라 유혹입니다. 그래도 먹는다면 계란은 넣으세요.', mood: 'smug', scores: [58, 60, 49, 65], luckyItem: '계란', luckyColor: '노란색', advice: '저녁을 든든히 먹기' },
   ],
-  leave: [
-    { title: '칼퇴의 신기루', fortune: '6시 정각에 노트북을 덮는 순간 "잠깐 5분만"이 찾아옵니다. 그 5분은 90분입니다.', mood: 'tired', indices: [['야근 지수', 88], ['칼퇴 확률', 12]], luckyItem: '이어폰' },
-    { title: '칼퇴 성공 예감', fortune: '오늘은 6시 정각에 문을 나설 운입니다. 단, 엘리베이터에서 팀장님을 만나지 않는다면요.', mood: 'happy', indices: [['칼퇴 확률', 86], ['월루 지수', 71]], luckyItem: '운동화' },
+  work: [
+    { title: '집중력 반짝', fortune: '미뤄 둔 일이 생각보다 금방 끝납니다. 끝내고 나면 괜히 미뤘다 싶을 겁니다.', mood: 'happy', scores: [70, 57, 66, 68], luckyItem: '포스트잇', luckyColor: '민트색', advice: '제일 귀찮은 일부터 하기' },
+    { title: '마감은 가까이', fortune: '"아직 시간 있어"라는 생각이 오늘의 함정입니다. 시계는 생각보다 빨리 갑니다.', mood: 'panic', scores: [61, 55, 58, 63], luckyItem: '타이머', luckyColor: '하얀색', advice: '할 일 목록 세 줄 쓰기' },
   ],
 };
 
@@ -127,8 +133,11 @@ function fallbackFortune(topic) {
     title: f.title,
     fortune: f.fortune,
     mood: f.mood,
+    indices: CATEGORIES.map((c, i) => ({ label: c.label, value: jitter(f.scores[i]) })),
     luckyItem: f.luckyItem,
-    indices: f.indices.map(([label, value]) => ({ label, value: jitter(value) })),
+    luckyColor: f.luckyColor,
+    luckyNumber: 1 + Math.floor(Math.random() * 99),
+    advice: f.advice,
   };
 }
 
@@ -141,7 +150,7 @@ function clampPct(v) {
   return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 50;
 }
 
-// 그림이 하나도 없을 때 쓰는 기분별 SVG 캐릭터 (작은 감자 직장인)
+// 그림이 하나도 없을 때 쓰는 기분별 SVG 캐릭터 (작은 감자 캐릭터)
 function fallbackSvg(mood) {
   const palettes = {
     tired: ['#cfd8ff', '#8b9cf0'], happy: ['#ffe3a3', '#ffb84d'], panic: ['#ffd0d0', '#ff7a7a'],
@@ -240,18 +249,19 @@ async function generateFortuneText({ weekday, scene }) {
   const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
   const parsed = JSON.parse(text);
 
-  const indices = (Array.isArray(parsed.indices) ? parsed.indices : [])
-    .filter((i) => i && i.label)
-    .slice(0, 2)
-    .map((i) => ({ label: String(i.label).slice(0, 12), value: clampPct(i.value) }));
-  if (!parsed.fortune || indices.length === 0) throw new Error('응답 형식이 올바르지 않음');
+  const scores = parsed.scores || {};
+  if (!parsed.fortune || CATEGORIES.some((c) => scores[c.key] === undefined)) throw new Error('응답 형식이 올바르지 않음');
+  const num = Math.round(Number(parsed.luckyNumber));
 
   return {
     title: String(parsed.title || '오늘의 운세').slice(0, 20),
     fortune: String(parsed.fortune).slice(0, 200),
-    indices,
-    luckyItem: String(parsed.luckyItem || '아메리카노').slice(0, 16),
-    mood: MOODS.includes(parsed.mood) ? parsed.mood : 'tired',
+    indices: CATEGORIES.map((c) => ({ label: c.label, value: clampPct(scores[c.key]) })),
+    luckyItem: String(parsed.luckyItem || '네잎클로버').slice(0, 16),
+    luckyColor: String(parsed.luckyColor || '하늘색').slice(0, 10),
+    luckyNumber: num >= 1 && num <= 99 ? num : 7,
+    advice: String(parsed.advice || '오늘은 물 한 잔 더').slice(0, 40),
+    mood: MOODS.includes(parsed.mood) ? parsed.mood : 'happy',
   };
 }
 
@@ -332,6 +342,9 @@ app.post('/api/fortune', async (req, res) => {
     fortune: fortune.fortune,
     indices: fortune.indices,
     luckyItem: fortune.luckyItem,
+    luckyColor: fortune.luckyColor,
+    luckyNumber: fortune.luckyNumber,
+    advice: fortune.advice,
     mood,
     image,
     sceneId: scene ? scene.id : null,

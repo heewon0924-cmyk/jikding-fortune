@@ -5,8 +5,8 @@ const path = require('path');
 
 const { style, scenes } = require('./scenes.json');
 const TOPICS = {
-  coffee: '☕ 커피', build: '🛠 빌드', meeting: '🗣 회의', overtime: '🌙 야근',
-  lunch: '🍚 점심', slack: '🔔 알림', payday: '💸 월급날', leave: '🏃 칼퇴',
+  money: '💰 금전', love: '💕 연애', health: '💪 건강', people: '🤝 사람',
+  luck: '🍀 사소한 행운', rest: '🛋 휴식', food: '🍜 맛있는 것', work: '📚 일·공부',
 };
 const imgDir = path.join(__dirname, '..', 'public', 'img');
 const have = new Set(fs.existsSync(imgDir) ? fs.readdirSync(imgDir).map((f) => f.replace(/\.[^.]+$/, '')) : []);
