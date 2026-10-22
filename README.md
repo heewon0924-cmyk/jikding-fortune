@@ -17,7 +17,8 @@ malgeumi/
 │   ├── setup-server.sh            서버 최초 1회 설정 (Node, Nginx, systemd, clone)
 │   ├── deploy.sh                  새 버전 배포 (pull → npm ci → 재시작 → 헬스 체크, 실패 시 롤백)
 │   ├── malgeumi.service    systemd 템플릿
-│   └── nginx-fortune.conf         Nginx 리버스 프록시 템플릿
+│   ├── nginx-malgeumi.conf        말그미 사이트 템플릿 (/fortune/ → 앱)
+│   └── nginx-fortune-location.conf  다른 사이트에 /fortune/ 만 붙일 때 쓰는 조각
 ```
 
 ## 동작 방식과 비용
@@ -116,33 +117,22 @@ sudo systemctl restart malgeumi
 
 `DOMAIN`을 주지 않으면 Nginx 설정은 건드리지 않습니다.
 
-### 3. Nginx에 연결하기
+### 3. 말그미 사이트 만들기 (Nginx)
 
-이미 다른 사이트(예: 폭풍을 부르는 섬)를 서비스하고 있다면 Nginx를 다시 설치할 필요가 없습니다. 둘 중 하나를 고르세요.
-
-**A. 기존 주소 아래 `/fortune/`으로 붙이기 (도메인 추가 없음, 인증서 그대로)**
-
-기존 사이트 설정(`/etc/nginx/sites-available/island` 등)의 `server { }` 블록 안, `location / {` 위에
-`deploy/nginx-fortune-location.conf`의 내용을 붙여 넣습니다.
+기존 사이트(`sangdan`, `default`)는 그대로 두고 `malgeumi` 사이트를 새로 만듭니다. sslip.io를 쓰면 `malgeumi.161.33.130.92.sslip.io`처럼 IP 앞에 이름만 붙여도 이 서버로 연결되니, 도메인을 사거나 DNS를 설정할 필요가 없습니다.
 
 ```bash
-sudo nano /etc/nginx/sites-available/island     # 붙여 넣기
-sudo nginx -t && sudo systemctl reload nginx
-# → https://기존주소/fortune/
+sudo DOMAIN=malgeumi.161.33.130.92.sslip.io bash ~/malgeumi/deploy/setup-server.sh
+sudo certbot --nginx -d malgeumi.161.33.130.92.sslip.io
+# → https://malgeumi.161.33.130.92.sslip.io/fortune/
 ```
 
-certbot이 만든 `listen 443` 블록이 따로 있다면, 그 블록 안에 붙여 넣어야 HTTPS에서 열립니다.
+- `deploy/nginx-malgeumi.conf`가 `/etc/nginx/sites-available/malgeumi`로 설치됩니다. `/`는 `/fortune/`으로 보내고, `/fortune/`은 운세 앱(127.0.0.1:3000)으로 넘깁니다.
+- 한 번 설치한 사이트 파일은 다시 실행해도 덮어쓰지 않습니다. certbot이 추가한 HTTPS 설정을 지키기 위해서입니다.
+- 나중에 앱을 더 만들면 이 파일의 `server { }` 안에 `location /다른앱/`을 추가하면 됩니다.
+- 이미 있는 다른 사이트 아래에 붙이고 싶다면, 그 사이트의 `server { }` 안에 `deploy/nginx-fortune-location.conf` 내용을 붙여 넣어도 됩니다.
 
-**B. 서브도메인으로 따로 띄우기 (예: `fortune.내도메인`)**
-
-DNS에 서브도메인 A 레코드를 서버 IP로 추가한 다음 실행합니다.
-
-```bash
-sudo DOMAIN=fortune.내도메인 bash ~/malgeumi/deploy/setup-server.sh
-sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사이트 때 이미 설치됨
-```
-
-**방화벽**: 기존 사이트가 이미 80/443을 열어 두었으니 추가로 열 포트는 없습니다. 3000 포트는 열지 마세요(앱은 127.0.0.1에서만 받습니다).
+**방화벽**: 80/443은 기존 사이트 때문에 이미 열려 있습니다. 3000 포트는 열지 마세요(앱은 127.0.0.1에서만 받습니다).
 휴대폰의 클립보드 복사와 공유 창은 **HTTPS에서만** 확실하게 동작합니다.
 
 ### 4. 업데이트 배포 / 운영 명령
@@ -158,10 +148,10 @@ sudo systemctl restart malgeumi         # .env 바꾼 뒤
 ## 확인
 
 ```bash
-curl -s https://기존주소/fortune/api/health      # B 방식이면 https://fortune.내도메인/api/health
+curl -s https://malgeumi.161.33.130.92.sslip.io/fortune/api/health
 # {"ok":true,"hasKey":true,"textModel":"gemini-2.5-flash","scenes":"12/40",...}   ← 그림 12장이 들어가 있음
 
-curl -s -X POST https://기존주소/fortune/api/fortune \
+curl -s -X POST https://malgeumi.161.33.130.92.sslip.io/fortune/api/fortune \
   -H 'content-type: application/json' -d '{}' | head -c 400
 ```
 

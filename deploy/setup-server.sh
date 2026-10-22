@@ -2,8 +2,8 @@
 # 서버 최초 1회 설정 (Ubuntu/Debian). 저장소를 내 계정으로 clone 한 뒤 sudo 로 실행.
 #
 #   git clone git@github.com:heewon0924-cmyk/malgeumi.git ~/malgeumi   (키 별칭을 쓰면 github-별칭:heewon0924-cmyk/malgeumi.git)
-#   sudo bash ~/malgeumi/deploy/setup-server.sh                 # 기존 사이트에 /fortune/ 로 붙일 때
-#   sudo DOMAIN=fortune.example.com bash ~/malgeumi/deploy/setup-server.sh   # 새 (서브)도메인일 때
+#   sudo DOMAIN=malgeumi.161.33.130.92.sslip.io bash ~/malgeumi/deploy/setup-server.sh   # 말그미 사이트까지 만들 때
+#   sudo bash ~/malgeumi/deploy/setup-server.sh            # 앱만 (Nginx 는 건드리지 않음)
 #
 # 앱은 저장소 주인 계정(예: ubuntu)으로 실행된다. 그래서 권한을 따로 고칠 일이 없다.
 set -euo pipefail
@@ -54,9 +54,9 @@ systemctl restart malgeumi
 echo "▶ Nginx"
 if [ -n "$DOMAIN" ]; then
   if [ -e /etc/nginx/sites-available/malgeumi ]; then
-    echo "  /etc/nginx/sites-available/malgeumi 이 이미 있어 그대로 둡니다."
+    echo "  /etc/nginx/sites-available/malgeumi 이 이미 있어 그대로 둡니다 (certbot 이 고친 내용을 지키기 위해)"
   else
-    sed "s#__DOMAIN__#$DOMAIN#g" deploy/nginx-fortune.conf > /etc/nginx/sites-available/malgeumi
+    sed "s#__DOMAIN__#$DOMAIN#g" deploy/nginx-malgeumi.conf > /etc/nginx/sites-available/malgeumi
     ln -sf /etc/nginx/sites-available/malgeumi /etc/nginx/sites-enabled/malgeumi
   fi
   nginx -t && systemctl reload nginx
@@ -71,5 +71,5 @@ for _ in $(seq 1 10); do
   sleep 1
 done || true
 echo "✅ 완료."
-[ -n "$DOMAIN" ] && echo "   HTTPS: sudo certbot --nginx -d $DOMAIN"
+[ -n "$DOMAIN" ] && echo "   다음: sudo certbot --nginx -d $DOMAIN   →  https://$DOMAIN/fortune/"
 exit 0
