@@ -4,7 +4,7 @@
 빌드 과정이 없습니다. `server.js` 하나와 `public/index.html` 하나로 돌아갑니다.
 
 ```
-jikding-fortune/
+malgeumi/
 ├── server.js                      Express 백엔드 (그림 고르기 + Gemini 운세, API 키 은닉)
 ├── public/index.html              모바일 프론트엔드 (Vanilla JS, CSS 내장)
 ├── public/img/                    캐릭터 그림 (scenes.json 의 id 와 같은 파일 이름)
@@ -16,7 +16,7 @@ jikding-fortune/
 ├── deploy/
 │   ├── setup-server.sh            서버 최초 1회 설정 (Node, Nginx, systemd, clone)
 │   ├── deploy.sh                  새 버전 배포 (pull → npm ci → 재시작 → 헬스 체크, 실패 시 롤백)
-│   ├── jikding-fortune.service    systemd 템플릿
+│   ├── malgeumi.service    systemd 템플릿
 │   └── nginx-fortune.conf         Nginx 리버스 프록시 템플릿
 ```
 
@@ -43,7 +43,7 @@ jikding-fortune/
 1. [`scenes/PROMPTS.md`](scenes/PROMPTS.md)의 프롬프트를 하나씩 Gemini 앱에 붙여 넣어 그림을 만듭니다.
 2. 마음에 드는 그림을 **적힌 이름 그대로** 저장합니다. 예: `coffee-01.png`. 확장자는 png·jpg·webp 모두 됩니다.
 3. 저장한 그림을 저장소의 `public/img/`에 올립니다. GitHub 웹에서 `public/img` 폴더로 들어가 **Add file → Upload files**를 쓰면 됩니다.
-4. 서버에서 `sudo bash ~/jikding-fortune/deploy/deploy.sh`를 실행합니다.
+4. 서버에서 `sudo bash ~/malgeumi/deploy/deploy.sh`를 실행합니다.
 
 40장을 다 채우지 않아도 됩니다. 올린 그림만으로 동작하고, 새 그림은 1분 안에 반영됩니다.
 장면을 바꾸거나 추가하려면 `scenes/scenes.json`을 고친 뒤 `node scenes/make-prompts.js`로 `PROMPTS.md`를 다시 만듭니다.
@@ -58,8 +58,8 @@ jikding-fortune/
 ## 로컬 실행
 
 ```bash
-git clone git@github.com:heewon0924-cmyk/jikding-fortune.git
-cd jikding-fortune
+git clone git@github.com:heewon0924-cmyk/malgeumi.git
+cd malgeumi
 cp .env.example .env      # GEMINI_API_KEY 입력 (https://aistudio.google.com/apikey)
 npm install
 npm start                 # http://127.0.0.1:3000
@@ -69,7 +69,7 @@ npm start                 # http://127.0.0.1:3000
 
 ## 클라우드 서버 배포
 
-모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 내 계정으로 clone되어 있습니다. 아래 예시는 `~/jikding-fortune`이지만, 다른 경로에 두어도 스크립트가 자기 위치를 기준으로 동작합니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
+모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 내 계정으로 clone되어 있습니다. 아래 예시는 `~/malgeumi`이지만, 다른 경로에 두어도 스크립트가 자기 위치를 기준으로 동작합니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
 코드를 고쳐 GitHub에 push한 뒤 서버에서 `deploy.sh`를 한 번 실행하면 새 버전이 반영됩니다.
 
 ```
@@ -81,21 +81,30 @@ npm start                 # http://127.0.0.1:3000
 ### 1. 서버가 저장소를 읽을 수 있게 하기 (private 저장소라서 필요)
 
 내 계정(예: `ubuntu`)으로 키를 만들고, 공개키를 GitHub 저장소 **Settings → Deploy keys**에 **읽기 전용**으로 등록합니다. sudo는 쓰지 않습니다.
+`github-malgeumi`라는 별칭을 따로 두면 이 서버에서 다른 GitHub 키를 쓰고 있어도 섞이지 않습니다.
 
 ```bash
-ssh-keygen -t ed25519 -N "" -f ~/.ssh/jikding_deploy
-printf 'Host github.com\n  IdentityFile ~/.ssh/jikding_deploy\n' >> ~/.ssh/config
-cat ~/.ssh/jikding_deploy.pub         # 이 내용을 Deploy keys 에 붙여넣기
-ssh -T git@github.com                 # "successfully authenticated" 확인
+ssh-keygen -t ed25519 -N "" -f ~/.ssh/malgeumi_deploy -C "malgeumi-server"
+cat >> ~/.ssh/config <<'EOF'
+
+Host github-malgeumi
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/malgeumi_deploy
+  IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config
+cat ~/.ssh/malgeumi_deploy.pub        # 이 내용을 Deploy keys 에 붙여넣기
+ssh -T github-malgeumi                # "successfully authenticated" 확인
 ```
 
 ### 2. 최초 설정 (한 번만)
 
 ```bash
-git clone git@github.com:heewon0924-cmyk/jikding-fortune.git ~/jikding-fortune   # sudo 없이
-sudo bash ~/jikding-fortune/deploy/setup-server.sh
-nano ~/jikding-fortune/.env           # GEMINI_API_KEY 입력
-sudo systemctl restart jikding-fortune
+git clone github-malgeumi:heewon0924-cmyk/malgeumi.git ~/malgeumi   # sudo 없이
+sudo bash ~/malgeumi/deploy/setup-server.sh
+nano ~/malgeumi/.env           # GEMINI_API_KEY 입력
+sudo systemctl restart malgeumi
 ```
 
 앱은 **저장소 주인 계정**(여기서는 `ubuntu`)으로 실행됩니다. 그래서 따로 권한을 고칠 일이 없습니다.
@@ -129,7 +138,7 @@ certbot이 만든 `listen 443` 블록이 따로 있다면, 그 블록 안에 붙
 DNS에 서브도메인 A 레코드를 서버 IP로 추가한 다음 실행합니다.
 
 ```bash
-sudo DOMAIN=fortune.내도메인 bash ~/jikding-fortune/deploy/setup-server.sh
+sudo DOMAIN=fortune.내도메인 bash ~/malgeumi/deploy/setup-server.sh
 sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사이트 때 이미 설치됨
 ```
 
@@ -139,9 +148,9 @@ sudo certbot --nginx -d fortune.내도메인          # certbot 은 기존 사�
 ### 4. 업데이트 배포 / 운영 명령
 
 ```bash
-sudo bash ~/jikding-fortune/deploy/deploy.sh   # 최신 main 배포 (헬스 체크 실패 시 직전 커밋으로 자동 롤백)
-sudo journalctl -u jikding-fortune -f          # 로그
-sudo systemctl restart jikding-fortune         # .env 바꾼 뒤
+sudo bash ~/malgeumi/deploy/deploy.sh   # 최신 main 배포 (헬스 체크 실패 시 직전 커밋으로 자동 롤백)
+sudo journalctl -u malgeumi -f          # 로그
+sudo systemctl restart malgeumi         # .env 바꾼 뒤
 ```
 
 `.env`는 git에 올라가지 않고 서버에만 있습니다. 배포할 때도 건드리지 않습니다.
@@ -156,7 +165,7 @@ curl -s -X POST https://기존주소/fortune/api/fortune \
   -H 'content-type: application/json' -d '{}' | head -c 400
 ```
 
-- `textSource`가 `"ai"`면 Gemini가 쓴 운세이고, `"fallback"`이면 내장 문구입니다. 실패한 이유는 `journalctl -u jikding-fortune`에 남습니다.
+- `textSource`가 `"ai"`면 Gemini가 쓴 운세이고, `"fallback"`이면 내장 문구입니다. 실패한 이유는 `journalctl -u malgeumi`에 남습니다.
 - `imageSource`가 `"scene"`이면 미리 넣어 둔 그림이고, `"fallback"`이면 그림이 없어서 내장 SVG를 쓴 것입니다.
 
 ## API

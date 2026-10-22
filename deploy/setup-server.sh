@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 서버 최초 1회 설정 (Ubuntu/Debian). 저장소를 내 계정으로 clone 한 뒤 sudo 로 실행.
 #
-#   git clone git@github.com:heewon0924-cmyk/jikding-fortune.git ~/jikding-fortune
-#   sudo bash ~/jikding-fortune/deploy/setup-server.sh                 # 기존 사이트에 /fortune/ 로 붙일 때
-#   sudo DOMAIN=fortune.example.com bash ~/jikding-fortune/deploy/setup-server.sh   # 새 (서브)도메인일 때
+#   git clone git@github.com:heewon0924-cmyk/malgeumi.git ~/malgeumi   (키 별칭을 쓰면 github-별칭:heewon0924-cmyk/malgeumi.git)
+#   sudo bash ~/malgeumi/deploy/setup-server.sh                 # 기존 사이트에 /fortune/ 로 붙일 때
+#   sudo DOMAIN=fortune.example.com bash ~/malgeumi/deploy/setup-server.sh   # 새 (서브)도메인일 때
 #
 # 앱은 저장소 주인 계정(예: ubuntu)으로 실행된다. 그래서 권한을 따로 고칠 일이 없다.
 set -euo pipefail
@@ -33,25 +33,31 @@ echo "▶ 앱 준비 ($APP_DIR, 실행 계정: $APP_USER)"
 cd "$APP_DIR"
 if [ ! -f .env ]; then
   as_app cp .env.example .env
-  echo "  ⚠ .env 를 만들었습니다. GEMINI_API_KEY 를 넣고 'sudo systemctl restart jikding-fortune' 하세요."
+  echo "  ⚠ .env 를 만들었습니다. GEMINI_API_KEY 를 넣고 'sudo systemctl restart malgeumi' 하세요."
 fi
 chmod 600 .env
 as_app npm ci --omit=dev
 
 echo "▶ systemd"
+# 예전 이름(jikding-fortune)으로 등록된 서비스가 있으면 정리한다
+if [ -e /etc/systemd/system/jikding-fortune.service ]; then
+  echo "  예전 서비스 jikding-fortune 을 멈추고 지웁니다"
+  systemctl disable --now jikding-fortune || true
+  rm -f /etc/systemd/system/jikding-fortune.service
+fi
 sed -e "s#__APP_DIR__#$APP_DIR#g" -e "s#__APP_USER__#$APP_USER#g" -e "s#__NODE__#$(command -v node)#g" \
-  deploy/jikding-fortune.service > /etc/systemd/system/jikding-fortune.service
+  deploy/malgeumi.service > /etc/systemd/system/malgeumi.service
 systemctl daemon-reload
-systemctl enable jikding-fortune
-systemctl restart jikding-fortune
+systemctl enable malgeumi
+systemctl restart malgeumi
 
 echo "▶ Nginx"
 if [ -n "$DOMAIN" ]; then
-  if [ -e /etc/nginx/sites-available/jikding-fortune ]; then
-    echo "  /etc/nginx/sites-available/jikding-fortune 이 이미 있어 그대로 둡니다."
+  if [ -e /etc/nginx/sites-available/malgeumi ]; then
+    echo "  /etc/nginx/sites-available/malgeumi 이 이미 있어 그대로 둡니다."
   else
-    sed "s#__DOMAIN__#$DOMAIN#g" deploy/nginx-fortune.conf > /etc/nginx/sites-available/jikding-fortune
-    ln -sf /etc/nginx/sites-available/jikding-fortune /etc/nginx/sites-enabled/jikding-fortune
+    sed "s#__DOMAIN__#$DOMAIN#g" deploy/nginx-fortune.conf > /etc/nginx/sites-available/malgeumi
+    ln -sf /etc/nginx/sites-available/malgeumi /etc/nginx/sites-enabled/malgeumi
   fi
   nginx -t && systemctl reload nginx
 else
