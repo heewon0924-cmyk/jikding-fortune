@@ -13,7 +13,6 @@ jikding-fortune/
 │   ├── deploy.sh                  새 버전 배포 (pull → npm ci → 재시작 → 헬스 체크, 실패 시 롤백)
 │   ├── jikding-fortune.service    systemd 템플릿
 │   └── nginx-fortune.conf         Nginx 리버스 프록시 템플릿
-└── .github/workflows/deploy.yml   push 마다 테스트, main 이면 서버 자동 배포
 ```
 
 ## 먼저 알아 둘 것: 무료 티어와 모델
@@ -58,13 +57,13 @@ npm start                 # http://127.0.0.1:3000
 
 ## 클라우드 서버 배포
 
-흐름은 이렇습니다: **내 PC에서 `git push` → GitHub Actions가 테스트 → 통과하면 서버에 SSH로 접속해 `deploy.sh` 실행**.
-서버에는 이 저장소가 `/opt/jikding-fortune`에 clone되어 있고, systemd가 앱을 띄우고, Nginx가 80/443을 받아 넘깁니다.
+모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 `/opt/jikding-fortune`에 clone되어 있습니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
+코드를 고쳐 GitHub에 push한 뒤 서버에서 `deploy.sh`를 한 번 실행하면 새 버전이 반영됩니다.
 
 ```
 [폰 브라우저] ─HTTPS─▶ Nginx :443 ─▶ node server.js 127.0.0.1:3000 ─▶ Google AI API
-                                        ▲
-[git push] ─▶ GitHub Actions ─SSH─▶ deploy.sh (pull · npm ci · restart · health check)
+
+[PC] git push ─▶ GitHub ◀─ git pull ─ [서버] sudo deploy.sh (pull · npm ci · restart · health check)
 ```
 
 ### 1. 서버가 저장소를 읽을 수 있게 하기 (private 저장소라서 필요)
@@ -105,39 +104,10 @@ sudo certbot --nginx -d fortune.example.com
 sudo ufw allow OpenSSH && sudo ufw allow 'Nginx Full' && sudo ufw enable
 ```
 
-클라우드 콘솔의 보안 그룹에서도 22/80/443 포트를 열어 두세요. 3000 포트는 열지 않습니다(앱은 127.0.0.1에서만 받습니다).
+클라우드 콘솔의 보안 그룹에서도 22(SSH)·80·443 포트를 열어 두세요. 3000 포트는 열지 않습니다(앱은 127.0.0.1에서만 받습니다).
 휴대폰의 클립보드 복사와 공유 창은 **HTTPS에서만** 확실하게 동작합니다.
 
-### 4. push 하면 자동 배포 (GitHub Actions)
-
-**① 서버에 배포 전용 계정을 만듭니다.** 이 계정은 `deploy.sh` 하나만 sudo로 실행할 수 있게 제한합니다.
-
-```bash
-sudo adduser --disabled-password --gecos "" deployer
-echo 'deployer ALL=(root) NOPASSWD: /opt/jikding-fortune/deploy/deploy.sh' | sudo tee /etc/sudoers.d/jikding-deploy
-sudo chmod 440 /etc/sudoers.d/jikding-deploy
-# GitHub Actions 가 쓸 SSH 키 (PC 에서 만들어도 됨)
-ssh-keygen -t ed25519 -N "" -f ./gha_deploy
-sudo mkdir -p /home/deployer/.ssh && cat gha_deploy.pub | sudo tee -a /home/deployer/.ssh/authorized_keys
-sudo chown -R deployer:deployer /home/deployer/.ssh && sudo chmod 700 /home/deployer/.ssh
-```
-
-**② 시크릿을 등록합니다.** GitHub 저장소 **Settings → Secrets and variables → Actions**에 아래 값을 넣습니다.
-
-| 이름 | 값 |
-|---|---|
-| `SSH_HOST` | 서버 IP 또는 도메인 |
-| `SSH_USER` | `deployer` |
-| `SSH_KEY` | `gha_deploy` 개인키 전체 내용 |
-| `SSH_PORT` | (선택) 22가 아니면 |
-
-이제 `main`에 push하면 아래 순서로 진행됩니다.
-1. **test**: `npm ci`, 문법 검사, 데모 모드 스모크 테스트를 돌립니다.
-2. **deploy**: 서버에서 `deploy.sh`를 실행합니다.
-
-시크릿이 없으면 deploy 단계는 안내만 남기고 건너뜁니다. Actions 탭에서 수동 실행(`workflow_dispatch`)도 할 수 있습니다.
-
-### 수동 배포 / 운영 명령
+### 4. 업데이트 배포 / 운영 명령
 
 ```bash
 sudo /opt/jikding-fortune/deploy/deploy.sh     # 최신 main 배포 (헬스 체크 실패 시 직전 커밋으로 자동 롤백)
