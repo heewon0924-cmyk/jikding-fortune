@@ -355,12 +355,6 @@
     }
   }
 
-  // 카카오톡 텍스트 카드는 200자까지라 핵심만 담는다
-  function kakaoText(data) {
-    const t = [`🔮 오늘의 운세 — ${data.title}`, data.fortune, `🍀 ${data.luckyItem} · ${data.luckyColor} · ${data.luckyNumber}`].join('\n');
-    return t.length > 200 ? `${t.slice(0, 199)}…` : t;
-  }
-
   // 순서: 카카오톡 공유 → 휴대폰 공유 창 → 복사.
   // 공유 창은 HTTPS 에서만, 카카오톡 공유는 카카오에 등록한 도메인에서만 동작한다.
   async function share() {
@@ -369,11 +363,27 @@
     const text = shareText(current);
     if (kakaoReady) {
       try {
+        // 피드형 카드: 배너 그림 + 제목·운세 + 분야별 점수 목록 + 버튼 두 개
+        const home = `${location.origin}${location.pathname}`;
         window.Kakao.Share.sendDefault({
-          objectType: 'text',
-          text: kakaoText(current),
-          link: { mobileWebUrl: url, webUrl: url },
-          buttonTitle: '나도 뽑기',
+          objectType: 'feed',
+          content: {
+            title: `🔮 ${current.title}`,
+            description: current.fortune,
+            imageUrl: `${home}share.png`,
+            imageWidth: 800,
+            imageHeight: 400,
+            link: { mobileWebUrl: url, webUrl: url },
+          },
+          itemContent: {
+            items: current.indices.map((i) => ({ item: i.label, itemOp: `${i.value}%` })),
+            sum: '행운의 숫자',
+            sumOp: String(current.luckyNumber),
+          },
+          buttons: [
+            { title: '결과 보기', link: { mobileWebUrl: url, webUrl: url } },
+            { title: '나도 뽑기', link: { mobileWebUrl: home, webUrl: home } },
+          ],
         });
         return;
       } catch (e) {
