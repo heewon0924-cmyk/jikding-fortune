@@ -307,7 +307,11 @@ const app = express();
 app.set('trust proxy', CONFIG.trustProxy);
 app.disable('x-powered-by');
 app.use(express.json({ limit: '4kb' }));
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1h' }));
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '1h',
+  // 화면(html)은 배포하면 바로 바뀌어야 하므로 매번 새로 확인하게 한다. 그림은 1시간 캐시한다.
+  setHeaders: (res, file) => { if (file.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache'); },
+}));
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
