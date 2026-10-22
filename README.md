@@ -57,7 +57,7 @@ npm start                 # http://127.0.0.1:3000
 
 ## 클라우드 서버 배포
 
-모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 `/opt/jikding-fortune`에 clone되어 있습니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
+모든 것은 내 클라우드 서버 안에서 돌아갑니다. 서버에는 이 저장소가 clone되어 있습니다. 아래 예시는 `/opt/jikding-fortune`을 쓰지만, 다른 경로에 두어도 스크립트가 자기 위치를 기준으로 동작합니다. systemd가 앱을 띄우고, Nginx가 80/443 요청을 받아 앱으로 넘깁니다.
 코드를 고쳐 GitHub에 push한 뒤 서버에서 `deploy.sh`를 한 번 실행하면 새 버전이 반영됩니다.
 
 ```
@@ -89,6 +89,8 @@ sudo REPO_URL=git@github.com:heewon0924-cmyk/jikding-fortune.git \
 sudo nano /opt/jikding-fortune/.env          # GEMINI_API_KEY 입력
 sudo systemctl restart jikding-fortune
 ```
+
+> **경로 주의**: 앱은 `fortune` 계정으로 실행됩니다. `/home/내계정/` 아래에 두면 Ubuntu 22.04의 홈 디렉토리 권한(750) 때문에 `fortune`이 들어가지 못해 앱이 뜨지 않습니다. `/opt`나 `/srv`처럼 홈 밖의 경로를 쓰세요.
 
 `setup-server.sh`는 앱을 `127.0.0.1:3000`에 띄우는 것까지 합니다.
 - Node 20, git, Nginx는 **없을 때만** 설치합니다.

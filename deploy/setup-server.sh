@@ -9,7 +9,7 @@ set -euo pipefail
 
 REPO_URL="${REPO_URL:?REPO_URL 을 지정하세요}"
 DOMAIN="${DOMAIN:-}"
-APP_DIR="${APP_DIR:-/opt/jikding-fortune}"
+APP_DIR="${APP_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"   # 기본: 이 스크립트가 들어 있는 저장소
 APP_USER="${APP_USER:-fortune}"
 BRANCH="${BRANCH:-main}"
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 새 버전 배포: 최신 코드 받기 → 의존성 → 재시작 → 헬스 체크. 실패하면 직전 커밋으로 되돌린다.
-#   sudo bash /opt/jikding-fortune/deploy/deploy.sh
+#   sudo bash <저장소 경로>/deploy/deploy.sh
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/opt/jikding-fortune}"
+APP_DIR="${APP_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"   # 기본: 이 스크립트가 들어 있는 저장소
 APP_USER="${APP_USER:-fortune}"
 BRANCH="${BRANCH:-main}"
 PORT="${PORT:-3000}"
