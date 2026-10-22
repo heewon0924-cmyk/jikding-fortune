@@ -18,7 +18,7 @@ const CONFIG = {
   textModel: env('TEXT_MODEL', 'gemini-2.5-flash'),
   ratePerMin: Number(env('RATE_LIMIT_PER_MIN', 6)),
   dailyTextLimit: Number(env('DAILY_TEXT_LIMIT', 200)),
-  keepResults: Number(env('KEEP_RESULTS', 100)),
+  keepResults: Number(env('KEEP_RESULTS', 1000)),
   trustProxy: env('TRUST_PROXY', 'loopback'),
 };
 
@@ -262,11 +262,43 @@ function useDaily(kind, limit) {
   return true;
 }
 
-// 공유 링크용으로 최근 결과를 메모리에 보관 (재시작하면 사라짐)
+// 공유 링크용으로 최근 결과를 data/results.json 에 보관한다. 재시작(배포)해도 링크가 살아 있다.
+const RESULTS_FILE = path.join(__dirname, 'data', 'results.json');
 const results = new Map();
+try {
+  for (const r of JSON.parse(fs.readFileSync(RESULTS_FILE, 'utf8'))) results.set(r.id, r);
+} catch (_) { /* 처음 실행이거나 파일이 깨짐 → 빈 목록으로 시작 */ }
+
+// 임시 파일에 쓰고 바꿔치기해서, 쓰다가 끊겨도 파일이 깨지지 않게 한다
+function writeResults() {
+  try {
+    fs.mkdirSync(path.dirname(RESULTS_FILE), { recursive: true });
+    fs.writeFileSync(`${RESULTS_FILE}.tmp`, JSON.stringify([...results.values()]));
+    fs.renameSync(`${RESULTS_FILE}.tmp`, RESULTS_FILE);
+  } catch (e) {
+    console.warn('[results] 저장 실패:', e.message);
+  }
+}
+
+// 연달아 뽑아도 파일은 1초에 한 번만 쓴다
+let writeTimer = null;
+function persistResults() {
+  clearTimeout(writeTimer);
+  writeTimer = setTimeout(() => { writeTimer = null; writeResults(); }, 1000);
+}
+
+// 배포로 재시작될 때 아직 안 쓴 결과를 마저 쓴다
+for (const sig of ['SIGTERM', 'SIGINT']) {
+  process.on(sig, () => {
+    if (writeTimer) { clearTimeout(writeTimer); writeResults(); }
+    process.exit(0);
+  });
+}
+
 function saveResult(r) {
   results.set(r.id, r);
   while (results.size > CONFIG.keepResults) results.delete(results.keys().next().value);
+  persistResults();
 }
 
 // ───────────────────────────── 라우트 ─────────────────────────────
@@ -329,7 +361,7 @@ app.post('/api/fortune', async (req, res) => {
 
 app.get('/api/fortune/:id', (req, res) => {
   const r = results.get(req.params.id);
-  if (!r) return res.status(404).json({ error: '운세가 이미 퇴근했습니다. (만료된 링크)' });
+  if (!r) return res.status(404).json({ error: '공유된 운세를 찾지 못했어요. 오래된 링크일 수 있어요. 새로 뽑아 보세요!' });
   res.json(r);
 });
 

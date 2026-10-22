@@ -1,2 +1,4 @@
 node_modules/
 .env
+# 공유 링크용 결과 저장 (서버에만 있음)
+data/
