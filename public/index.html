@@ -98,7 +98,7 @@
   .loading-text { font-size: 15px; color: var(--muted); min-height: 1.5em; transition: opacity .2s; }
 
   /* 결과 */
-  .result { gap: 16px; padding-top: 20px; }
+  .result { gap: 16px; padding-top: 20px; flex: none; } /* 내용 높이에 맞춘다 (그림이 없을 때 빈칸 방지) */
   .art {
     width: 100%; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden;
     background: var(--accent-soft); display: grid; place-items: center;
@@ -115,9 +115,9 @@
   .lucky div { background: var(--accent-soft); border-radius: 14px; padding: 10px 6px; text-align: center; }
   .lucky span { display: block; font-size: 11px; color: var(--muted); margin-bottom: 3px; }
   .lucky b { font-size: 14px; word-break: keep-all; }
-  .advice { margin: 0; font-size: 14px; line-height: 1.5; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 14px; }
+  .advice { margin: 0; font-size: 14px; line-height: 1.5; word-break: keep-all; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 14px; }
   .advice b { color: var(--accent); }
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
 
   .error { color: #d64545; font-size: 14px; text-align: center; margin: 0; }
   .toast {
@@ -155,7 +155,7 @@
 
   <!-- 3. 결과 -->
   <section class="card result hidden" id="view-result">
-    <div class="art"><img id="r-img" alt="오늘의 운세 캐릭터"></div>
+    <div class="art hidden" id="r-art"><img id="r-img" alt="오늘의 운세 캐릭터"></div>
     <h2 class="title" id="r-title"></h2>
     <p class="fortune" id="r-fortune"></p>
     <div class="indices" id="r-indices"></div>
@@ -167,7 +167,7 @@
     <p class="advice"><b>💡 오늘의 조언</b> · <span id="r-advice"></span></p>
     <div class="actions">
       <button class="btn btn-ghost" id="btn-again">🔄 다시 뽑기</button>
-      <button class="btn btn-primary" id="btn-share" style="max-width:none">📋 복사 / 공유</button>
+      <button class="btn btn-primary" id="btn-share" style="max-width:none">💬 공유하기</button>
     </div>
   </section>
 
@@ -264,6 +264,7 @@
   }
 
   function preload(src) {
+    if (!src) return Promise.resolve();
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = img.onerror = resolve;
@@ -273,7 +274,8 @@
 
   function render(data) {
     current = data;
-    $('r-img').src = data.image;
+    $('r-art').classList.toggle('hidden', !data.image);
+    if (data.image) $('r-img').src = data.image;
     $('r-title').textContent = data.title;
     $('r-fortune').textContent = data.fortune;
     $('r-lucky').textContent = data.luckyItem;
@@ -330,19 +332,25 @@
     if (!ok) throw new Error('copy failed');
   }
 
+  // 휴대폰에서는 공유 창(카카오톡 등)을 바로 띄우고, 공유 창이 없는 곳(PC 등)에서는 복사한다.
+  // 공유 창은 HTTPS 에서만 열린다.
   async function share() {
     if (!current) return;
     const url = `${location.origin}${location.pathname}?id=${encodeURIComponent(current.id)}`;
     const text = shareText(current);
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: '오늘의 운세', text: `${text}\n\n👉 나도 뽑기`, url });
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') return; // 사용자가 공유 창을 닫음
+      }
+    }
     try {
       await copyText(`${text}\n\n👉 나도 뽑기: ${url}`);
-      toast('복사 완료! 단톡방에 붙여넣으세요 ✨');
+      toast('복사 완료! 카톡방에 붙여넣으세요 ✨');
     } catch (_) {
-      if (navigator.share) {
-        try { await navigator.share({ title: '오늘의 운세', text, url }); } catch (_) {}
-      } else {
-        toast('복사에 실패했어요. 화면을 캡처해주세요 🙏');
-      }
+      toast('복사에 실패했어요. 화면을 캡처해주세요 🙏');
     }
   }
 

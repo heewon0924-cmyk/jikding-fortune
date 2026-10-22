@@ -1,7 +1,7 @@
 // 오늘의 운세 뽑기 — Express 백엔드
 // 역할: 미리 그려 둔 캐릭터 그림(public/img) 중 하나를 고르고, 그 장면에 맞는 운세를 Gemini 로 쓴다.
-// API 키는 서버에만 있다. 키가 없거나 무료 한도를 넘기면 그림 주제에 맞춘 내장 문구로 응답하고,
-// 그림이 하나도 없으면 기분별 SVG 캐릭터를 보여 준다.
+// API 키는 서버에만 있다. 키가 없거나 무료 한도를 넘기면 그림 주제에 맞춘 내장 문구로 응답한다.
+// 그림이 하나도 없으면 image 를 null 로 보내고, 화면은 그림 칸을 숨긴다.
 
 require('dotenv').config();
 const express = require('express');
@@ -148,34 +148,6 @@ function jitter(v) {
 function clampPct(v) {
   const n = Math.round(Number(v));
   return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : 50;
-}
-
-// 그림이 하나도 없을 때 쓰는 기분별 SVG 캐릭터 (작은 감자 캐릭터)
-function fallbackSvg(mood) {
-  const palettes = {
-    tired: ['#cfd8ff', '#8b9cf0'], happy: ['#ffe3a3', '#ffb84d'], panic: ['#ffd0d0', '#ff7a7a'],
-    smug: ['#d4f5dc', '#5fcf86'], sleepy: ['#e8dcff', '#a98bf0'],
-  };
-  const faces = {
-    tired: '<path d="M88 112 q10 6 20 0 M132 112 q10 6 20 0" stroke="#3b3355" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M105 150 q15 -8 30 0" stroke="#3b3355" stroke-width="5" fill="none" stroke-linecap="round"/>',
-    happy: '<path d="M86 116 q12 -14 24 0 M130 116 q12 -14 24 0" stroke="#3b3355" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M100 140 q20 24 40 0 z" fill="#3b3355"/>',
-    panic: '<circle cx="98" cy="112" r="11" fill="#fff" stroke="#3b3355" stroke-width="4"/><circle cx="142" cy="112" r="11" fill="#fff" stroke="#3b3355" stroke-width="4"/><circle cx="98" cy="112" r="4" fill="#3b3355"/><circle cx="142" cy="112" r="4" fill="#3b3355"/><ellipse cx="120" cy="152" rx="10" ry="13" fill="#3b3355"/><path d="M172 84 q6 12 0 20 q-6 -8 0 -20z" fill="#7cc8ff"/>',
-    smug: '<path d="M86 114 h22 M132 114 h22" stroke="#3b3355" stroke-width="5" stroke-linecap="round"/><path d="M104 146 q20 10 36 -6" stroke="#3b3355" stroke-width="5" fill="none" stroke-linecap="round"/>',
-    sleepy: '<path d="M86 114 q11 8 22 0 M132 114 q11 8 22 0" stroke="#3b3355" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="120" cy="150" rx="8" ry="6" fill="#3b3355"/><text x="168" y="80" font-family="sans-serif" font-size="22" font-weight="700" fill="#8b7fc0">z</text><text x="184" y="62" font-family="sans-serif" font-size="16" font-weight="700" fill="#8b7fc0">z</text>',
-  };
-  const [bg, body] = palettes[mood] || palettes.tired;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-<rect width="240" height="240" fill="${bg}"/>
-<ellipse cx="120" cy="212" rx="70" ry="10" fill="#000" opacity=".08"/>
-<path d="M60 130 C56 70 92 48 122 50 C160 52 186 80 182 132 C178 182 150 206 118 204 C84 202 63 178 60 130Z" fill="#fff" stroke="#3b3355" stroke-width="6"/>
-<path d="M66 132 C64 86 94 62 122 62 C156 64 176 90 174 132 C172 176 148 196 118 194 C88 192 68 172 66 132Z" fill="${body}" opacity=".35"/>
-<circle cx="84" cy="138" r="9" fill="#ff8fa3" opacity=".55"/><circle cx="158" cy="138" r="9" fill="#ff8fa3" opacity=".55"/>
-${faces[mood] || faces.tired}
-<rect x="150" y="168" width="40" height="30" rx="6" fill="#fff" stroke="#3b3355" stroke-width="5"/>
-<path d="M190 176 q12 0 12 9 q0 9 -12 9" stroke="#3b3355" stroke-width="5" fill="none"/>
-<path d="M162 160 q4 -8 0 -14 M176 160 q4 -8 0 -14" stroke="#b9a7a0" stroke-width="3" fill="none" stroke-linecap="round"/>
-</svg>`;
-  return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
 }
 
 // ───────────────────────────── 그림 목록 ─────────────────────────────
@@ -331,9 +303,8 @@ app.post('/api/fortune', async (req, res) => {
     textSource = 'fallback';
   }
 
-  // 그림이 있으면 그림의 기분을 따른다 (내장 SVG 로 대체될 때만 fortune.mood 가 쓰인다)
   const mood = scene ? scene.mood : fortune.mood;
-  const image = scene ? `img/${encodeURIComponent(scene.file)}` : fallbackSvg(mood);
+  const image = scene ? `img/${encodeURIComponent(scene.file)}` : null;
 
   const result = {
     id: crypto.randomBytes(6).toString('base64url'),
@@ -349,7 +320,7 @@ app.post('/api/fortune', async (req, res) => {
     image,
     sceneId: scene ? scene.id : null,
     textSource,
-    imageSource: scene ? 'scene' : 'fallback',
+    imageSource: scene ? 'scene' : 'none',
     notes,
   };
   saveResult(result);

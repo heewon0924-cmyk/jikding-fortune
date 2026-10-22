@@ -33,7 +33,7 @@ malgeumi/
 
 **실패해도 멈추지 않습니다.**
 - 키가 없거나, Gemini가 실패하거나, 하루 한도를 넘으면 **그림 주제에 맞춘 내장 문구**로 응답합니다. 그래서 그림과 문구가 어긋나지 않습니다.
-- 그림이 하나도 없으면 기분별 **내장 SVG 캐릭터**를 보여 줍니다.
+- 그림이 하나도 없으면 그림 칸을 숨기고 운세만 보여 줍니다.
 
 **무료 한도를 지키는 장치** (`.env`에서 조정)
 - IP 하나당 분당 `RATE_LIMIT_PER_MIN`회(기본 6회)
@@ -156,14 +156,14 @@ curl -s -X POST https://malgeumi.161.33.130.92.sslip.io/fortune/api/fortune \
 ```
 
 - `textSource`가 `"ai"`면 Gemini가 쓴 운세이고, `"fallback"`이면 내장 문구입니다. 실패한 이유는 `journalctl -u malgeumi`에 남습니다.
-- `imageSource`가 `"scene"`이면 미리 넣어 둔 그림이고, `"fallback"`이면 그림이 없어서 내장 SVG를 쓴 것입니다.
+- `imageSource`가 `"scene"`이면 미리 넣어 둔 그림이고, `"none"`이면 그림이 없어서 그림 칸을 숨긴 것입니다.
 
 ## API
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, luckyColor, luckyNumber, advice, mood, image(그림 경로 또는 SVG dataURL), sceneId, textSource, imageSource }` |
+| `POST` | `/api/fortune` | body 없음 → `{ id, title, fortune, indices[{label,value}], luckyItem, luckyColor, luckyNumber, advice, mood, image(그림 경로 또는 null), sceneId, textSource, imageSource }` |
 | `GET` | `/api/fortune/:id` | 공유 링크용. 최근 `KEEP_RESULTS`개를 메모리에 보관합니다(재시작하면 사라짐). |
 | `GET` | `/api/health` | 키 유무, 모델, 들어간 그림 수, 오늘 사용량 |
 
-공유 버튼은 운세 텍스트와 `https://도메인/?id=...` 링크를 함께 복사합니다. 링크를 연 사람은 같은 결과 카드를 보고, 다시 뽑기로 자기 운세를 뽑을 수 있습니다.
+공유 버튼은 휴대폰에서는 공유 창(카카오톡 등)을 바로 띄우고, 공유 창이 없는 PC에서는 운세 텍스트와 `?id=...` 링크를 복사합니다. 공유 창은 HTTPS에서만 열립니다. 링크를 연 사람은 같은 결과 카드를 보고, 다시 뽑기로 자기 운세를 뽑을 수 있습니다.
