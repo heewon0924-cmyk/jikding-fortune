@@ -1,0 +1,19 @@
+# setup-server.sh 가 __값__ 을 채워 /etc/systemd/system/ 에 설치한다
+[Unit]
+Description=Jikding Fortune (Express)
+After=network.target
+
+[Service]
+Type=simple
+User=__APP_USER__
+WorkingDirectory=__APP_DIR__
+ExecStart=__NODE__ server.js
+Restart=on-failure
+RestartSec=3
+Environment=NODE_ENV=production
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

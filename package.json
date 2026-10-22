@@ -1,0 +1,17 @@
+{
+  "name": "jikding-fortune",
+  "version": "1.0.0",
+  "private": true,
+  "description": "오늘의 직딩/지인 운세 뽑기 — Gemini + Imagen 모바일 웹앱",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}
