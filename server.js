@@ -20,6 +20,11 @@ const CONFIG = {
   dailyTextLimit: Number(env('DAILY_TEXT_LIMIT', 200)),
   keepResults: Number(env('KEEP_RESULTS', 1000)),
   trustProxy: env('TRUST_PROXY', 'loopback'),
+  // 카카오톡 공유 (developers.kakao.com 에서 발급). 비워 두면 공유 창/복사로만 동작한다.
+  // JavaScript 키는 원래 브라우저에 공개되는 키이고, 등록한 사이트 도메인에서만 동작한다.
+  kakaoJsKey: env('KAKAO_JS_KEY', ''),
+  kakaoSdkUrl: env('KAKAO_SDK_URL', 'https://t1.kakaocdn.net/kakao_js_sdk/2.8.3/kakao.min.js'),
+  kakaoSdkIntegrity: env('KAKAO_SDK_INTEGRITY', ''),
 };
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
@@ -367,6 +372,15 @@ app.get('/api/fortune/:id', (req, res) => {
   const r = results.get(req.params.id);
   if (!r) return res.status(404).json({ error: '공유된 운세를 찾지 못했어요. 오래된 링크일 수 있어요. 새로 뽑아 보세요!' });
   res.json(r);
+});
+
+// 화면이 쓰는 공개 설정 (비밀 값은 넣지 않는다)
+app.get('/api/config', (_req, res) => {
+  res.json({
+    kakao: CONFIG.kakaoJsKey
+      ? { key: CONFIG.kakaoJsKey, sdkUrl: CONFIG.kakaoSdkUrl, integrity: CONFIG.kakaoSdkIntegrity || null }
+      : null,
+  });
 });
 
 app.get('/api/health', (_req, res) => {
